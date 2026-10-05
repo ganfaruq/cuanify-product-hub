@@ -10,7 +10,7 @@ main{max-width:900px;margin:40px auto;padding:24px}
 .card{background:#111114;border:1px solid #2b2b31;border-radius:18px;padding:24px;margin-bottom:20px}
 h1{margin:0 0 8px;font-size:32px}.muted{color:#9a9aa5}
 button{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;margin-right:8px}
-#one{background:#f4c400;color:#111}#ten{background:#fff;color:#111}#hundred{background:#8ff0a4;color:#111}#thousand{background:#ff8d8d;color:#111}
+#validate100{background:#66b3ff;color:#111}#validate1000{background:#4d8dff;color:#fff}#one{background:#f4c400;color:#111}#ten{background:#fff;color:#111}#hundred{background:#8ff0a4;color:#111}#thousand{background:#ff8d8d;color:#111}
 pre{white-space:pre-wrap;word-break:break-word;background:#050506;border-radius:12px;padding:16px;overflow:auto}
 .ok{color:#8ff0a4}.err{color:#ff8d8d}.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}.stat{background:#050506;border:1px solid #2b2b31;border-radius:12px;padding:14px}.stat b{display:block;font-size:28px;margin-top:4px}@media(max-width:700px){.statgrid{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -30,8 +30,12 @@ pre{white-space:pre-wrap;word-break:break-word;background:#050506;border-radius:
   <button id="login" type="button" style="background:#f4c400;color:#111">LOGIN ADMIN</button>
   <div id="loginStatus" class="muted" style="margin-top:10px"></div>
 </div>
-<div class="card" id="statsCard" style="display:none"><b>STATUS PROVISIONING</b><div class="statgrid"><div class="stat"><div class="muted">BELUM PROVISION</div><b id="pendingCount">-</b></div><div class="stat"><div class="muted">SUDAH BERHASIL</div><b id="provisionedCount">-</b></div><div class="stat"><div class="muted">SEDANG PROSES</div><b id="processingCount">-</b></div><div class="stat"><div class="muted">GAGAL</div><b id="failedCount">-</b></div></div><div class="muted" id="authCount" style="margin-top:12px">Auth account: -</div></div><div class="card" id="provisionCard" style="display:none">
+<div class="card" id="statsCard" style="display:none"><b>STATUS PROVISIONING</b><div class="statgrid"><div class="stat"><div class="muted">BELUM PROVISION</div><b id="pendingCount">-</b></div>
+    <div class="stat"><div class="muted">SIAP PROVISION</div><b id="eligibleCount">-</b></div>
+    <div class="stat"><div class="muted">UNREVIEWED</div><b id="unreviewedCount">-</b></div><div class="stat"><div class="muted">SUDAH BERHASIL</div><b id="provisionedCount">-</b></div><div class="stat"><div class="muted">SEDANG PROSES</div><b id="processingCount">-</b></div><div class="stat"><div class="muted">GAGAL</div><b id="failedCount">-</b></div></div><div class="muted" id="authCount" style="margin-top:12px">Auth account: -</div></div><div class="card" id="provisionCard" style="display:none">
   <p>Provisioning hanya mengambil queue <b>HIGH confidence</b>, verified, email valid, dan belum punya Auth.</p>
+  <button id="validate100">VALIDATE 100</button>
+  <button id="validate1000">VALIDATE 1000</button>
   <button id="one">PROVISION 1</button>
   <button id="ten">PROVISION 10</button>
   <button id="hundred">PROVISION 100</button>
@@ -60,6 +64,8 @@ const passwordEl=document.getElementById("password");
 const loginBtn=document.getElementById("login");
 const statsCard=document.getElementById("statsCard");
 const pendingCount=document.getElementById("pendingCount");
+const eligibleCount=document.getElementById("eligibleCount");
+const unreviewedCount=document.getElementById("unreviewedCount");
 const provisionedCount=document.getElementById("provisionedCount");
 const processingCount=document.getElementById("processingCount");
 const failedCount=document.getElementById("failedCount");
@@ -122,12 +128,32 @@ async function refreshStats(){
     const {data,error}=await supabaseClient.rpc("get_auth_provisioning_status");
     if(error) throw error;
     pendingCount.textContent=data.pending||0;
+    eligibleCount.textContent=data.eligible||0;
+    unreviewedCount.textContent=data.unreviewed||0;
     provisionedCount.textContent=data.provisioned||0;
     processingCount.textContent=data.processing||0;
     failedCount.textContent=data.failed||0;
     authCount.textContent="Auth account aktif/terhubung: "+(data.accounts_with_auth||0)+" | Total queue: "+(data.total_queue||0);
   }catch(e){
     authCount.textContent="Gagal membaca status: "+(e.message||String(e));
+  }
+}
+
+async function validateBatch(limit){
+  statusEl.textContent="Memvalidasi "+limit+" kandidat berdasarkan data member/penjualan...";
+  resultEl.textContent="";
+  document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=true);
+  try{
+    const {data,error}=await supabaseClient.rpc("review_legacy_identity_candidates",{p_limit:limit});
+    if(error) throw error;
+    statusEl.innerHTML='<span class="ok">VALIDASI SELESAI</span>';
+    resultEl.textContent=JSON.stringify(data,null,2);
+    await refreshStats();
+  }catch(e){
+    statusEl.innerHTML='<span class="err">VALIDASI GAGAL</span>';
+    resultEl.textContent=JSON.stringify(e,null,2);
+  }finally{
+    document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=false);
   }
 }
 
@@ -140,7 +166,7 @@ async function invokeBatch(batch){
 async function run(batch){
   statusEl.textContent="Menjalankan batch "+batch+"...";
   resultEl.textContent="";
-  document.querySelectorAll("#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=true);
+  document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=true);
   try{
     const data=await invokeBatch(batch);
     statusEl.innerHTML='<span class="ok">SELESAI</span>';
@@ -150,14 +176,14 @@ async function run(batch){
     statusEl.innerHTML='<span class="err">GAGAL</span>';
     resultEl.textContent=JSON.stringify(e,null,2);
   }finally{
-    document.querySelectorAll("#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=false);
+    document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=false);
   }
 }
 
 async function runLarge(total){
   statusEl.textContent="Menjalankan provisioning "+total+" akun, per sub-batch maksimal 10...";
   resultEl.textContent="";
-  document.querySelectorAll("#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=true);
+  document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=true);
   const summary={requested:total,processed:0,created_accounts:0,mapped_members:0,failed:0,runs:0,errors:[]};
   try{
     const chunks=Math.ceil(total/10);
@@ -192,10 +218,12 @@ async function runLarge(total){
     statusEl.innerHTML='<span class="err">GAGAL</span>';
     resultEl.textContent=JSON.stringify(summary,null,2)+"\n\n"+(e.message||String(e));
   }finally{
-    document.querySelectorAll("#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=false);
+    document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=false);
   }
 }
 
+document.getElementById("validate100").addEventListener("click",()=>validateBatch(100));
+document.getElementById("validate1000").addEventListener("click",()=>validateBatch(1000));
 document.getElementById("one").addEventListener("click",()=>run(1));
 document.getElementById("ten").addEventListener("click",()=>run(10));
 document.getElementById("hundred").addEventListener("click",()=>runLarge(100));
