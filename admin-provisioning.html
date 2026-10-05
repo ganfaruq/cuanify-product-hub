@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CUANIFY Admin Provisioning</title>
+<style>
+body{margin:0;background:#09090b;color:#f5f5f5;font-family:Arial,sans-serif}
+main{max-width:900px;margin:40px auto;padding:24px}
+.card{background:#111114;border:1px solid #2b2b31;border-radius:18px;padding:24px;margin-bottom:20px}
+h1{margin:0 0 8px;font-size:32px}.muted{color:#9a9aa5}
+button{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;margin-right:8px}
+#one{background:#f4c400;color:#111}#ten{background:#fff;color:#111}
+pre{white-space:pre-wrap;word-break:break-word;background:#050506;border-radius:12px;padding:16px;overflow:auto}
+.ok{color:#8ff0a4}.err{color:#ff8d8d}
+</style>
+</head>
+<body>
+<main>
+<div class="card">
+  <div class="muted">CUANIFY INTERNAL</div>
+  <h1>Auth Provisioning</h1>
+  <div id="who" class="muted">Memeriksa session...</div>
+</div>
+<div class="card">
+  <p>Provisioning hanya mengambil queue <b>HIGH confidence</b>, verified, email valid, dan belum punya Auth.</p>
+  <button id="one">PROVISION 1</button>
+  <button id="ten">PROVISION 10</button>
+</div>
+<div class="card">
+  <div id="status" class="muted">Belum ada proses.</div>
+  <pre id="result"></pre>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://nwjmtnaqbiwhrmgimyqy.supabase.co";
+const SUPABASE_ANON_KEY="PASTE_PUBLISHABLE_KEY";
+const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const who=document.getElementById("who");
+const statusEl=document.getElementById("status");
+const resultEl=document.getElementById("result");
+
+async function init(){
+  const {data:{session}}=await supabase.auth.getSession();
+  if(!session){ location.href="/"; return; }
+  who.textContent="Login: "+(session.user.email||session.user.id);
+}
+async function run(batch){
+  statusEl.textContent="Menjalankan batch "+batch+"...";
+  resultEl.textContent="";
+  document.querySelectorAll("button").forEach(b=>b.disabled=true);
+  try{
+    const {data,error}=await supabase.functions.invoke("provision-legacy-members",{body:{batch_size:batch}});
+    if(error) throw error;
+    statusEl.innerHTML='<span class="ok">SELESAI</span>';
+    resultEl.textContent=JSON.stringify(data,null,2);
+  }catch(e){
+    statusEl.innerHTML='<span class="err">GAGAL</span>';
+    resultEl.textContent=JSON.stringify(e,null,2);
+  }finally{
+    document.querySelectorAll("button").forEach(b=>b.disabled=false);
+  }
+}
+document.getElementById("one").onclick=()=>run(1);
+document.getElementById("ten").onclick=()=>run(10);
+init();
+</script>
+</body>
+</html>
