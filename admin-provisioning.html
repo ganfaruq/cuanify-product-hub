@@ -140,18 +140,31 @@ async function refreshStats(){
 }
 
 async function validateBatch(limit){
-  statusEl.textContent="Memvalidasi "+limit+" kandidat berdasarkan data member/penjualan...";
+  statusEl.textContent="Memvalidasi "+limit+" kandidat...";
   resultEl.textContent="";
   document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=true);
+  const summary={requested:limit,validated_email:0,validated_phone:0,validated_total:0,runs:0,errors:[]};
   try{
-    const {data,error}=await supabaseClient.rpc("review_legacy_identity_candidates",{p_limit:limit});
-    if(error) throw error;
+    const chunks=Math.ceil(limit/100);
+    for(let i=0;i<chunks;i++){
+      const size=Math.min(100,limit-(i*100));
+      const {data,error}=await supabaseClient.rpc("validate_legacy_identity_batch",{p_limit:size});
+      if(error) throw error;
+      summary.runs++;
+      summary.validated_email+=Number(data?.validated_email||0);
+      summary.validated_phone+=Number(data?.validated_phone||0);
+      summary.validated_total+=Number(data?.validated_total||0);
+      statusEl.textContent="Validasi: "+summary.validated_total+" akun tervalidasi...";
+      resultEl.textContent=JSON.stringify(summary,null,2);
+      await refreshStats();
+      if(Number(data?.validated_total||0)===0) break;
+    }
     statusEl.innerHTML='<span class="ok">VALIDASI SELESAI</span>';
-    resultEl.textContent=JSON.stringify(data,null,2);
+    resultEl.textContent=JSON.stringify(summary,null,2);
     await refreshStats();
   }catch(e){
     statusEl.innerHTML='<span class="err">VALIDASI GAGAL</span>';
-    resultEl.textContent=JSON.stringify(e,null,2);
+    resultEl.textContent=JSON.stringify(summary,null,2)+"\n\n"+(e.message||String(e));
   }finally{
     document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=false);
   }
