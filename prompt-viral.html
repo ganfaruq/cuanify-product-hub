@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+ <html lang="id">
+ <head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>Prompt Viral — PEBISNIS.DIGITAL</title>
+   <style>
+     :root {
+       --yellow: #f4c400;
+       --yellow-soft: #fff3a8;
+       --ink: #0b0b0b;
+       --paper: #ffffff;
+       --muted: #f3f3ef;
+     }
+     * { box-sizing: border-box; }
+     body {
+       margin: 0;
+       padding: 18px;
+       font-family: Inter, Arial, Helvetica, sans-serif;
+       background-color: var(--paper);
+       background-image: radial-gradient(#d8d8d2 0.7px, transparent 0.7px);
+       background-size: 18px 18px;
+       color: var(--ink);
+     }
+     button, input { font: inherit; }
+     .container {
+       max-width: 1920px;
+       margin: 0 auto;
+     }
+     .hero {
+       position: relative;
+       overflow: hidden;
+       min-height: 228px;
+       display: flex;
+       align-items: center;
+       padding: 36px clamp(24px, 5vw, 78px);
+       background: var(--yellow);
+       color: var(--ink);
+       border: 3px solid var(--ink);
+       border-radius: 4px;
+       margin-bottom: 22px;
+       box-shadow: 9px 9px 0 var(--ink);
+     }
+     .hero-copy {
+       position: relative;
+       z-index: 2;
+       max-width: 760px;
+     }
+     .eyebrow {
+       display: inline-block;
+       margin-bottom: 14px;
+       padding: 7px 11px;
+       background: var(--paper);
+       border: 2px solid var(--ink);
+       box-shadow: 3px 3px 0 var(--ink);
+       font-size: 12px;
+       font-weight: 900;
+       letter-spacing: 1.2px;
+     }
+     .hero h1 {
+       margin: 0 0 10px;
+       max-width: 700px;
+       font-size: clamp(38px, 5.5vw, 78px);
+       line-height: .88;
+       text-transform: uppercase;
+       letter-spacing: -3px;
+       font-weight: 950;
+     }
+     .hero p {
+       margin: 0;
+       max-width: 620px;
+       font-size: clamp(14px, 1.4vw, 18px);
+       line-height: 1.45;
+       font-weight: 700;
+     }
+     .doodle {
+       position: absolute;
+       right: clamp(18px, 6vw, 95px);
+       bottom: -13px;
+       width: 210px;
+       height: 210px;
+       z-index: 1;
+       transform: rotate(4deg);
+     }
+     .doodle .head {
+       position: absolute;
+       left: 76px;
+       top: 12px;
+       width: 57px;
+       height: 57px;
+       border: 7px solid var(--ink);
+       border-radius: 50%;
+       background: var(--paper);
+     }
+     .doodle .body,
+     .doodle .arm,
+     .doodle .leg {
+       position: absolute;
+       height: 7px;
+       background: var(--ink);
+       border-radius: 9px;
+       transform-origin: left center;
+     }
+     .doodle .body { left: 103px; top: 69px; width: 82px; transform: rotate(92deg); }
+     .doodle .arm.a { left: 104px; top: 89px; width: 78px; transform: rotate(-42deg); }
+     .doodle .arm.b { left: 103px; top: 89px; width: 82px; transform: rotate(211deg); }
+     .doodle .leg.a { left: 101px; top: 148px; width: 77px; transform: rotate(52deg); }
+     .doodle .leg.b { left: 101px; top: 148px; width: 75px; transform: rotate(137deg); }
+     .spark {
+       position: absolute;
+       font-size: 34px;
+       font-weight: 950;
+       line-height: 1;
+     }
+     .spark.s1 { right: 260px; top: 25px; transform: rotate(-12deg); }
+     .spark.s2 { right: 28px; top: 30px; transform: rotate(18deg); }
+     .spark.s3 { right: 255px; bottom: 20px; transform: rotate(12deg); }
+     .toolbar {
+       display: grid;
+       grid-template-columns: minmax(260px, 1fr) auto;
+       gap: 12px;
+       align-items: stretch;
+       margin-bottom: 20px;
+     }
+     .search input {
+       width: 100%;
+       height: 52px;
+       padding: 0 16px;
+       border: 3px solid var(--ink);
+       border-radius: 3px;
+       font-size: 15px;
+       font-weight: 750;
+       outline: none;
+       background: var(--paper);
+       box-shadow: 5px 5px 0 var(--ink);
+     }
+     .search input:focus {
+       background: var(--yellow-soft);
+       box-shadow: 3px 3px 0 var(--ink);
+       transform: translate(2px, 2px);
+     }
+     .status {
+       display: flex;
+       align-items: center;
+       background: var(--yellow);
+       color: var(--ink);
+       min-height: 52px;
+       padding: 10px 15px;
+       border: 3px solid var(--ink);
+       border-radius: 3px;
+       box-shadow: 5px 5px 0 var(--ink);
+       font-weight: 900;
+       font-size: 13px;
+     }
+     .grid {
+       display: grid;
+       grid-template-columns: repeat(10, minmax(0, 1fr));
+       gap: 10px;
+     }
+     .card {
+       position: relative;
+       aspect-ratio: 1 / 1;
+       min-width: 0;
+       overflow: hidden;
+       background: var(--muted);
+       border: 2px solid var(--ink);
+       border-radius: 2px;
+       box-shadow: 4px 4px 0 var(--ink);
+       transition: transform .16s ease, box-shadow .16s ease;
+     }
+     .card:hover {
+       z-index: 3;
+       transform: translate(-2px, -2px) rotate(-.5deg);
+       box-shadow: 7px 7px 0 var(--yellow), 9px 9px 0 var(--ink);
+     }
+     .number {
+       position: absolute;
+       top: 7px;
+       left: 7px;
+       background: var(--yellow);
+       color: var(--ink);
+       padding: 5px 7px;
+       border: 2px solid var(--ink);
+       border-radius: 2px;
+       box-shadow: 2px 2px 0 var(--ink);
+       font-size: 10px;
+       font-weight: 950;
+       z-index: 2;
+     }
+     .card img {
+       width: 100%;
+       height: 100%;
+       object-fit: cover;
+       background: var(--muted);
+       display: block;
+       filter: saturate(.92) contrast(1.03);
+     }
+     .card-body {
+       position: absolute;
+       inset: auto 6px 6px 6px;
+       z-index: 2;
+     }
+     .prompt-preview { display: none; }
+     .detail-btn,
+     .copy-btn,
+     .close-btn {
+       width: 100%;
+       border: 2px solid var(--ink);
+       padding: 9px 8px;
+       border-radius: 2px;
+       font-weight: 950;
+       cursor: pointer;
+       font-size: 11px;
+       text-transform: uppercase;
+     }
+     .detail-btn {
+       background: var(--paper);
+       color: var(--ink);
+       box-shadow: 3px 3px 0 var(--ink);
+     }
+     .detail-btn:hover {
+       background: var(--yellow);
+       transform: translate(2px, 2px);
+       box-shadow: 1px 1px 0 var(--ink);
+     }
+     .copy-btn {
+       background: var(--yellow);
+       color: var(--ink);
+       margin-top: 14px;
+       box-shadow: 4px 4px 0 var(--ink);
+     }
+     .close-btn {
+       background: var(--ink);
+       color: var(--paper);
+       margin-top: 10px;
+     }
+     .pagination {
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       gap: 8px;
+       flex-wrap: wrap;
+       margin-top: 28px;
+     }
+     .page-btn {
+       background: var(--paper);
+       color: var(--ink);
+       border: 2px solid var(--ink);
+       min-width: 42px;
+       padding: 11px 13px;
+       border-radius: 2px;
+       font-weight: 900;
+       cursor: pointer;
+       box-shadow: 3px 3px 0 var(--ink);
+     }
+     .page-btn.active {
+       background: var(--yellow);
+       color: var(--ink);
+     }
+     .page-btn:disabled {
+       opacity: 0.45;
+       cursor: not-allowed;
+     }
+     .dots {
+       color: var(--ink);
+       font-weight: bold;
+       padding: 0 4px;
+     }
+     .toast {
+       position: fixed;
+       left: 50%;
+       bottom: 24px;
+       transform: translateX(-50%);
+       background: var(--ink);
+       color: var(--paper);
+       padding: 12px 18px;
+       border: 2px solid var(--yellow);
+       border-radius: 2px;
+       display: none;
+       z-index: 1001;
+       font-size: 14px;
+     }
+     .modal {
+       position: fixed;
+       inset: 0;
+       background: rgba(0, 0, 0, 0.78);
+       display: none;
+       align-items: center;
+       justify-content: center;
+       padding: 18px;
+       z-index: 1000;
+     }
+     .modal-box {
+       width: 100%;
+       max-width: 760px;
+       max-height: 92vh;
+       overflow-y: auto;
+       background: white;
+       border: 3px solid var(--ink);
+       border-radius: 3px;
+       padding: 20px;
+       box-shadow: 10px 10px 0 var(--yellow);
+     }
+     .modal-image {
+       width: 100%;
+       max-height: 420px;
+       object-fit: contain;
+       background: var(--muted);
+       border: 2px solid var(--ink);
+       border-radius: 2px;
+       display: block;
+       margin-bottom: 16px;
+     }
+     .modal-title {
+       margin: 0 0 12px;
+       font-size: 24px;
+       line-height: 1.35;
+       color: var(--ink);
+       font-weight: 950;
+     }
+     .modal-prompt {
+       background: #fffdf1;
+       border: 2px solid var(--ink);
+       border-radius: 2px;
+       padding: 16px;
+       font-size: 15px;
+       line-height: 1.7;
+       color: #333;
+       white-space: pre-line;
+     }
+     @media (max-width: 1500px) {
+       .grid {
+         grid-template-columns: repeat(8, 1fr);
+       }
+     }
+     @media (max-width: 1100px) {
+       .grid {
+         grid-template-columns: repeat(6, 1fr);
+       }
+     }
+     @media (max-width: 780px) {
+       body {
+         padding: 12px;
+       }
+       .hero {
+         min-height: 205px;
+         padding: 26px 20px;
+         box-shadow: 6px 6px 0 var(--ink);
+       }
+       .hero-copy { max-width: 68%; }
+       .hero h1 { letter-spacing: -1.8px; }
+       .hero p { font-size: 12px; }
+       .doodle { right: 0; width: 180px; transform: scale(.78) rotate(4deg); }
+       .spark.s1, .spark.s3 { display: none; }
+       .toolbar {
+         grid-template-columns: 1fr;
+         margin-bottom: 18px;
+       }
+       .grid {
+         grid-template-columns: repeat(4, 1fr);
+         gap: 8px;
+       }
+       .modal-box {
+         padding: 16px;
+       }
+       .modal-title {
+         font-size: 20px;
+       }
+     }
+     @media (max-width: 480px) {
+       .hero { min-height: 188px; }
+       .hero-copy { max-width: 76%; }
+       .hero h1 { font-size: 37px; }
+       .hero p { max-width: 235px; }
+       .eyebrow { font-size: 9px; padding: 5px 7px; }
+       .doodle { right: -35px; bottom: -27px; transform: scale(.58) rotate(4deg); }
+       .spark.s2 { right: 8px; top: 15px; }
+       .grid {
+         grid-template-columns: repeat(3, 1fr);
+       }
+       .number { font-size: 8px; padding: 4px 5px; }
+       .card-body { inset: auto 4px 4px 4px; }
+       .detail-btn { padding: 6px 4px; font-size: 9px; }
+     }
+   </style>
+ </head>
+ <body>
+   <div class="container">
+     <section class="hero">
+       <div class="hero-copy">
+         <span class="eyebrow">PEBISNIS.DIGITAL × PROMPT LAB</span>
+         <h1>PROMPT<br>VIRAL</h1>
+         <p>Kumpulan prompt gambar yang bikin ide liar langsung punya bentuk. Pilih. Salin. Gas bikin.</p>
+       </div>
+       <span class="spark s1">✦</span>
+       <span class="spark s2">⚡</span>
+       <span class="spark s3">〰</span>
+       <div class="doodle" aria-hidden="true">
+         <span class="head"></span>
+         <span class="body"></span>
+         <span class="arm a"></span>
+         <span class="arm b"></span>
+         <span class="leg a"></span>
+         <span class="leg b"></span>
+       </div>
+     </section>
+     <div class="toolbar">
+       <div class="search">
+         <input type="text" id="searchInput" placeholder="Cari prompt yang bikin kepala meledak..." />
+       </div>
+       <div class="status" id="status">Lagi bongkar gudang prompt...</div>
+     </div>
+     <div class="grid" id="grid"></div>
+     <div class="pagination" id="pagination"></div>
+   </div>
+   <div class="toast" id="toast">✅ Prompt berhasil disalin</div>
+   <div class="modal" id="modal">
+     <div class="modal-box">
+       <img id="modalImage" class="modal-image" src="" alt="">
+       <h2 id="modalTitle" class="modal-title"></h2>
+       <div id="modalPrompt" class="modal-prompt"></div>
+       <button class="copy-btn" id="modalCopyBtn">Salin Prompt</button>
+       <button class="close-btn" onclick="closeModal()">Tutup</button>
+     </div>
+   </div>
+   <script>
+     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMxcpCWHuPYy4Ey296zyP4GVqpXAuns8qSG0v9riOtCgxZeo_gdMrdHL0Vc_ffi3QYtq63tSPvET1/pub?output=csv";
+     const ITEMS_PER_PAGE = 100;
+     const grid = document.getElementById("grid");
+     const pagination = document.getElementById("pagination");
+     const statusBox = document.getElementById("status");
+     const searchInput = document.getElementById("searchInput");
+     const toast = document.getElementById("toast");
+     const modal = document.getElementById("modal");
+     const modalImage = document.getElementById("modalImage");
+     const modalTitle = document.getElementById("modalTitle");
+     const modalPrompt = document.getElementById("modalPrompt");
+     const modalCopyBtn = document.getElementById("modalCopyBtn");
+     let allPrompts = [];
+     let filteredPrompts = [];
+     let currentPage = 1;
+     let selectedPrompt = "";
+     loadPrompts();
+     function loadPrompts() {
+       const url = SHEET_CSV_URL + "&cache=" + Date.now();
+       fetch(url)
+         .then(response => {
+           if (!response.ok) {
+             throw new Error("Gagal mengambil Google Sheet. Status: " + response.status);
+           }
+           return response.text();
+         })
+         .then(csvText => {
+           const rows = parseCSV(csvText);
+           if (rows.length < 2) {
+             statusBox.textContent = "Data Google Sheet kosong atau format belum benar.";
+             return;
+           }
+           const headers = rows[0].map(header => cleanHeader(header));
+           const idIndex = headers.indexOf("id");
+           const imageIndex = headers.indexOf("image_url");
+           const promptIndex = headers.indexOf("prompt");
+           if (idIndex === -1 || imageIndex === -1 || promptIndex === -1) {
+             statusBox.textContent = "Kolom wajib belum sesuai. Pakai: id | image_url | prompt";
+             return;
+           }
+           allPrompts = rows.slice(1).map((row, index) => {
+             return {
+               id: getColumnValue(row, idIndex) || index + 1,
+               image_url: getColumnValue(row, imageIndex),
+               prompt: getColumnValue(row, promptIndex),
+               no: index + 1
+             };
+           }).filter(item => item.prompt);
+           filteredPrompts = allPrompts;
+           currentPage = 1;
+           renderPage();
+         })
+         .catch(error => {
+           console.error(error);
+           statusBox.textContent = "Gagal tampil. Cek link publish Google Sheet dan koneksi internet.";
+         });
+     }
+     function cleanHeader(value) {
+       return String(value || "")
+         .replace(/\uFEFF/g, "")
+         .trim()
+         .toLowerCase();
+     }
+     function getColumnValue(row, index) {
+       if (index === -1) return "";
+       return row[index] ? String(row[index]).trim() : "";
+     }
+     function parseCSV(text) {
+       const rows = [];
+       let row = [];
+       let value = "";
+       let insideQuotes = false;
+       for (let i = 0; i < text.length; i++) {
+         const char = text[i];
+         const nextChar = text[i + 1];
+         if (char === '"' && insideQuotes && nextChar === '"') {
+           value += '"';
+           i++;
+         } else if (char === '"') {
+           insideQuotes = !insideQuotes;
+         } else if (char === "," && !insideQuotes) {
+           row.push(value);
+           value = "";
+         } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+           if (value || row.length > 0) {
+             row.push(value);
+             rows.push(row);
+             row = [];
+             value = "";
+           }
+           if (char === "\r" && nextChar === "\n") {
+             i++;
+           }
+         } else {
+           value += char;
+         }
+       }
+       if (value || row.length > 0) {
+         row.push(value);
+         rows.push(row);
+       }
+       return rows;
+     }
+     function renderPage() {
+       const totalItems = filteredPrompts.length;
+       const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+       if (currentPage > totalPages) {
+         currentPage = totalPages || 1;
+       }
+       const start = (currentPage - 1) * ITEMS_PER_PAGE;
+       const end = start + ITEMS_PER_PAGE;
+       const pageItems = filteredPrompts.slice(start, end);
+       renderCards(pageItems);
+       renderPagination(totalPages);
+       if (totalItems === 0) {
+         statusBox.textContent = "Prompt tidak ditemukan.";
+         return;
+       }
+       if (totalItems === allPrompts.length) {
+         statusBox.textContent = "Total prompt tersedia: " + totalItems + " | Halaman " + currentPage + " dari " + totalPages;
+       } else {
+         statusBox.textContent = "Hasil ditemukan: " + totalItems + " | Halaman " + currentPage + " dari " + totalPages;
+       }
+     }
+     function renderCards(items) {
+       grid.innerHTML = "";
+       if (items.length === 0) {
+         grid.innerHTML = "<p>Prompt tidak ditemukan.</p>";
+         pagination.innerHTML = "";
+         return;
+       }
+       items.forEach(item => {
+         const card = document.createElement("div");
+         card.className = "card";
+         const number = document.createElement("div");
+         number.className = "number";
+         number.textContent = "#" + String(item.id).padStart(3, "0");
+         const image = document.createElement("img");
+         image.src = makeImageUrl(item.image_url);
+         image.alt = "Prompt Cuanify " + item.id;
+         image.loading = "lazy";
+         image.onerror = function () {
+           this.src = "https://via.placeholder.com/800x600?text=Cuanify+Prompt";
+         };
+         const body = document.createElement("div");
+         body.className = "card-body";
+         const preview = document.createElement("div");
+         preview.className = "prompt-preview";
+         preview.textContent = item.prompt;
+         const button = document.createElement("button");
+         button.className = "detail-btn";
+         button.textContent = "Detail";
+         button.onclick = function () {
+           openModal(item);
+         };
+         body.appendChild(preview);
+         body.appendChild(button);
+         card.appendChild(number);
+         card.appendChild(image);
+         card.appendChild(body);
+         grid.appendChild(card);
+       });
+     }
+     function makeImageUrl(url) {
+       const cleanUrl = String(url || "").trim();
+       if (!cleanUrl) {
+         return "https://via.placeholder.com/800x600?text=Cuanify+Prompt";
+       }
+       const driveFileMatch = cleanUrl.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+       if (driveFileMatch && driveFileMatch[1]) {
+         return "https://drive.google.com/uc?export=view&id=" + driveFileMatch[1];
+       }
+       const driveOpenMatch = cleanUrl.match(/drive\.google\.com\/open\?id=([^&]+)/);
+       if (driveOpenMatch && driveOpenMatch[1]) {
+         return "https://drive.google.com/uc?export=view&id=" + driveOpenMatch[1];
+       }
+       return cleanUrl;
+     }
+     function openModal(item) {
+       selectedPrompt = item.prompt;
+       modalImage.src = makeImageUrl(item.image_url);
+       modalImage.alt = "Prompt Cuanify " + item.id;
+       modalTitle.textContent = "PROMPT #" + String(item.id).padStart(3, "0");
+       modalPrompt.textContent = item.prompt;
+       modal.style.display = "flex";
+     }
+     function closeModal() {
+       modal.style.display = "none";
+     }
+     modal.addEventListener("click", function (event) {
+       if (event.target === modal) {
+         closeModal();
+       }
+     });
+     modalCopyBtn.addEventListener("click", function () {
+       copyPrompt(selectedPrompt);
+     });
+     function renderPagination(totalPages) {
+       pagination.innerHTML = "";
+       if (totalPages <= 1) return;
+       const prevBtn = document.createElement("button");
+       prevBtn.className = "page-btn";
+       prevBtn.textContent = "Prev";
+       prevBtn.disabled = currentPage === 1;
+       prevBtn.onclick = function () {
+         changePage(currentPage - 1);
+       };
+       pagination.appendChild(prevBtn);
+       const pages = getVisiblePages(totalPages);
+       pages.forEach(page => {
+         if (page === "...") {
+           const dots = document.createElement("span");
+           dots.className = "dots";
+           dots.textContent = "...";
+           pagination.appendChild(dots);
+           return;
+         }
+         const btn = document.createElement("button");
+         btn.className = "page-btn";
+         btn.textContent = page;
+         if (page === currentPage) {
+           btn.classList.add("active");
+         }
+         btn.onclick = function () {
+           changePage(page);
+         };
+         pagination.appendChild(btn);
+       });
+       const nextBtn = document.createElement("button");
+       nextBtn.className = "page-btn";
+       nextBtn.textContent = "Next";
+       nextBtn.disabled = currentPage === totalPages;
+       nextBtn.onclick = function () {
+         changePage(currentPage + 1);
+       };
+       pagination.appendChild(nextBtn);
+     }
+     function getVisiblePages(totalPages) {
+       const pages = [];
+       if (totalPages <= 7) {
+         for (let i = 1; i <= totalPages; i++) {
+           pages.push(i);
+         }
+         return pages;
+       }
+       pages.push(1);
+       if (currentPage > 4) {
+         pages.push("...");
+       }
+       const start = Math.max(2, currentPage - 1);
+       const end = Math.min(totalPages - 1, currentPage + 1);
+       for (let i = start; i <= end; i++) {
+         pages.push(i);
+       }
+       if (currentPage < totalPages - 3) {
+         pages.push("...");
+       }
+       pages.push(totalPages);
+       return pages;
+     }
+     function changePage(page) {
+       currentPage = page;
+       renderPage();
+       window.scrollTo({
+         top: 0,
+         behavior: "smooth"
+       });
+     }
+     function copyPrompt(text) {
+       if (navigator.clipboard && window.isSecureContext) {
+         navigator.clipboard.writeText(text).then(showToast).catch(function () {
+           copyWithFallback(text);
+         });
+       } else {
+         copyWithFallback(text);
+       }
+     }
+     function copyWithFallback(text) {
+       const textarea = document.createElement("textarea");
+       textarea.value = text;
+       textarea.style.position = "fixed";
+       textarea.style.left = "-9999px";
+       document.body.appendChild(textarea);
+       textarea.focus();
+       textarea.select();
+       try {
+         document.execCommand("copy");
+         showToast();
+       } catch (error) {
+         alert("Prompt belum bisa disalin otomatis. Silakan salin manual.");
+       }
+       document.body.removeChild(textarea);
+     }
+     function showToast() {
+       toast.style.display = "block";
+       setTimeout(function () {
+         toast.style.display = "none";
+       }, 1600);
+     }
+     searchInput.addEventListener("input", function () {
+       const keyword = this.value.toLowerCase();
+       filteredPrompts = allPrompts.filter(item => {
+         return String(item.prompt).toLowerCase().includes(keyword) ||
+                String(item.id).toLowerCase().includes(keyword);
+       });
+       currentPage = 1;
+       renderPage();
+     });
+   </script>
+ </body>
+ </html>
+
