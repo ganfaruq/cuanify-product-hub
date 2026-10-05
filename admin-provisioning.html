@@ -22,10 +22,19 @@ pre{white-space:pre-wrap;word-break:break-word;background:#050506;border-radius:
   <h1>Auth Provisioning</h1>
   <div id="who" class="muted">Memeriksa session...</div>
 </div>
-<div class="card">
+<div class="card" id="loginCard">
+  <p><b>Login admin diperlukan.</b></p>
+  <p class="muted">Login menggunakan akun CUANIFY yang sudah masuk allowlist provisioning.</p>
+  <input id="email" type="email" autocomplete="username" placeholder="Email admin" style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid #333;background:#09090b;color:#fff;margin:6px 0;">
+  <input id="password" type="password" autocomplete="current-password" placeholder="Password" style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid #333;background:#09090b;color:#fff;margin:6px 0 12px;">
+  <button id="login" style="background:#f4c400;color:#111">LOGIN ADMIN</button>
+  <div id="loginStatus" class="muted" style="margin-top:10px"></div>
+</div>
+<div class="card" id="provisionCard" style="display:none">
   <p>Provisioning hanya mengambil queue <b>HIGH confidence</b>, verified, email valid, dan belum punya Auth.</p>
   <button id="one">PROVISION 1</button>
   <button id="ten">PROVISION 10</button>
+  <button id="logout" style="background:#2b2b31;color:#fff">LOGOUT</button>
 </div>
 <div class="card">
   <div id="status" class="muted">Belum ada proses.</div>
@@ -40,12 +49,46 @@ const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const who=document.getElementById("who");
 const statusEl=document.getElementById("status");
 const resultEl=document.getElementById("result");
+const loginCard=document.getElementById("loginCard");
+const provisionCard=document.getElementById("provisionCard");
+const loginStatus=document.getElementById("loginStatus");
+
+function showAdmin(session){
+  if(!session){
+    who.textContent="Belum login.";
+    loginCard.style.display="block";
+    provisionCard.style.display="none";
+    return;
+  }
+  who.textContent="Login: "+(session.user.email||session.user.id);
+  loginCard.style.display="none";
+  provisionCard.style.display="block";
+}
 
 async function init(){
   const {data:{session}}=await supabase.auth.getSession();
-  if(!session){ location.href="/"; return; }
-  who.textContent="Login: "+(session.user.email||session.user.id);
+  showAdmin(session);
+  supabase.auth.onAuthStateChange((_event, session)=>showAdmin(session));
 }
+
+async function login(){
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value;
+  loginStatus.textContent="Login...";
+  const {error}=await supabase.auth.signInWithPassword({email,password});
+  if(error){
+    loginStatus.textContent="Login gagal: "+error.message;
+    return;
+  }
+  loginStatus.textContent="Login berhasil.";
+}
+
+document.getElementById("login").onclick=login;
+document.getElementById("logout").onclick=async()=>{
+  await supabase.auth.signOut();
+  resultEl.textContent="";
+  statusEl.textContent="Belum ada proses.";
+};
 async function run(batch){
   statusEl.textContent="Menjalankan batch "+batch+"...";
   resultEl.textContent="";
