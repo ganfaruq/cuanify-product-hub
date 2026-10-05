@@ -43,23 +43,42 @@
   </div>
 </section>
 
-<section id="akses" class="section">
+<section id="akses" class="section panel-section">
   <div class="section-title"><h2>Produk CUANIFY</h2><span id="count">0 akses</span></div>
   <div class="controls"><div class="search-wrap"><span class="search-icon">⌕</span><input id="search" class="search" type="search" placeholder="Cari produk..." autocomplete="off"></div></div>
   <main id="grid" class="product-list" aria-live="polite"><div class="empty">Memuat produk...</div></main>
 </section>
 
+<section id="affiliate" class="section panel-section" hidden>
+  <div class="section-title"><h2>Affiliate</h2><span>CUANIFY</span></div>
+  <div class="hero-card" style="padding:22px">
+    <div class="eyebrow">PROGRAM AFFILIATE</div>
+    <h2 style="font:900 28px/1 Raleway;margin:12px 0 8px;letter-spacing:-1px">Jual produk. Dapat komisi.</h2>
+    <p style="color:#aaa1b5;font-size:12px;line-height:1.6;margin:0">Dashboard affiliate sedang kami siapkan. Nanti semua link promosi, penjualan, dan komisi kamu ada di sini.</p>
+  </div>
+</section>
+
+<section id="akun" class="section panel-section" hidden>
+  <div class="section-title"><h2>Akun</h2><span>PROFIL MEMBER</span></div>
+  <div class="product" style="padding:20px">
+    <div class="eyebrow">AKUN SAYA</div>
+    <h3 id="accountEmail" style="font:900 18px Raleway;margin:10px 0 6px"></h3>
+    <p style="color:var(--muted);font-size:11px;line-height:1.6;margin:0 0 16px">Akun kamu sudah terhubung dengan sistem member CUANIFY.</p>
+    <button id="accountChangePassword" class="logout" style="width:100%">GANTI PASSWORD</button>
+  </div>
+</section>
+
 <footer class="footer">© 2026 CUANIFY. Member Area.</footer>
 <nav class="bottom-nav" aria-label="Navigasi Member Area">
-  <a href="#akses" class="active" aria-current="page">
+  <a href="#akses" data-panel="akses" class="active" aria-current="page">
     <span class="nav-icon">▦</span>
     <span class="nav-label">AKSES</span>
   </a>
-  <a href="coming-soon.html?feature=affiliate" title="Affiliate segera hadir">
+  <a href="#affiliate" data-panel="affiliate">
     <span class="nav-icon">↗</span>
     <span class="nav-label">AFFILIATE</span>
   </a>
-  <a href="coming-soon.html?feature=akun" title="Pengaturan akun">
+  <a href="#akun" data-panel="akun">
     <span class="nav-icon">○</span>
     <span class="nav-label">AKUN</span>
   </a>
@@ -94,6 +113,17 @@ function productCategory(name,active){
 }
 
 const app=document.getElementById("app");
+const panels={akses:document.getElementById("akses"),affiliate:document.getElementById("affiliate"),akun:document.getElementById("akun")};
+const navLinks=[...document.querySelectorAll(".bottom-nav a")];
+
+function switchPanel(name){
+  Object.entries(panels).forEach(([key,el])=>{ if(el) el.hidden=key!==name; });
+  navLinks.forEach(link=>link.classList.toggle("active",link.dataset.panel===name));
+  const active=navLinks.find(link=>link.dataset.panel===name);
+  if(active) active.setAttribute("aria-current","page");
+  navLinks.filter(link=>link.dataset.panel!==name).forEach(link=>link.removeAttribute("aria-current"));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
 const grid=document.getElementById("grid");
 const search=document.getElementById("search");
 const count=document.getElementById("count");
@@ -164,6 +194,7 @@ async function boot(){
 
   const email=session.user.email||"";
   document.getElementById("email").textContent=email;
+  document.getElementById("accountEmail").textContent=email;
   document.getElementById("memberLabel").textContent=email;
 
   const name=email.split("@")[0]||"Member";
@@ -204,6 +235,13 @@ async function boot(){
 }
 
 search.addEventListener("input",render);
+
+navLinks.forEach(link=>link.addEventListener("click",e=>{
+  e.preventDefault();
+  switchPanel(link.dataset.panel);
+}));
+
+document.getElementById("accountChangePassword").addEventListener("click",()=>location.href="change-password.html");
 
 document.getElementById("logout").addEventListener("click",async()=>{
   await supabase.auth.signOut();
