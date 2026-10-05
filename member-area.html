@@ -149,7 +149,7 @@ async function boot(){
 
   if(!error && Array.isArray(data)){
     owned=new Set(
-      data.map(p=>p.product_slug).filter(Boolean)
+      data.map(p=>p.slug).filter(Boolean)
     );
   }
 
