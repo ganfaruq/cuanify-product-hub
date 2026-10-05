@@ -27,7 +27,12 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const supabase=createClient("https://nwjmtnaqbiwhrmgimyqy.supabase.co","sb_publishable_6x3fyciQNza50vtKq1S53w_xsogvAJc");
 const grid=document.getElementById("grid"),count=document.getElementById("count"),emailEl=document.getElementById("email"),greeting=document.getElementById("greeting");
 const {data:{session}}=await supabase.auth.getSession();
-if(!session){location.href="login.html"}else{
+if(!session){location.href="login.html"}
+else{
+ const {data:firstLogin,error:firstLoginError}=await supabase.rpc("get_my_first_login_state");
+ if(firstLoginError){location.href="login.html"}
+ else if(firstLogin?.required){location.href="change-password.html"}
+ else{
  emailEl.textContent=session.user.email||"";
  const name=(session.user.user_metadata?.name||session.user.email?.split("@")[0]||"Member");
  greeting.textContent="Halo, "+name+".";
@@ -41,6 +46,7 @@ if(!session){location.href="login.html"}else{
    return '<a class="card" href="'+(p.access_url||"#")+'" target="_blank" rel="noopener"><div class="icon">'+mark+'</div><h3>'+p.product_name+'</h3><p>'+((p.product_description||"Akses produk CUANIFY.")+'</p><div class="open">BUKA PRODUK →</div></a>'
   }).join("");
  }
+}
 }
 document.getElementById("logout").onclick=async()=>{await supabase.auth.signOut();location.href="login.html"};
 </script>
