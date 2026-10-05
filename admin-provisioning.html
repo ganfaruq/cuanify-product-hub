@@ -27,7 +27,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:#050506;border-radius:
   <p class="muted">Login menggunakan akun CUANIFY yang sudah masuk allowlist provisioning.</p>
   <input id="email" type="email" autocomplete="username" placeholder="Email admin" style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid #333;background:#09090b;color:#fff;margin:6px 0;">
   <input id="password" type="password" autocomplete="current-password" placeholder="Password" style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid #333;background:#09090b;color:#fff;margin:6px 0 12px;">
-  <button id="login" style="background:#f4c400;color:#111">LOGIN ADMIN</button>
+  <button id="login" type="button" style="background:#f4c400;color:#111">LOGIN ADMIN</button>
   <div id="loginStatus" class="muted" style="margin-top:10px"></div>
 </div>
 <div class="card" id="provisionCard" style="display:none">
@@ -45,13 +45,17 @@ pre{white-space:pre-wrap;word-break:break-word;background:#050506;border-radius:
 <script>
 const SUPABASE_URL="https://nwjmtnaqbiwhrmgimyqy.supabase.co";
 const SUPABASE_ANON_KEY="sb_publishable_6x3fyciQNza50vtKq1S53w_xsogvAJc";
-const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
 const who=document.getElementById("who");
 const statusEl=document.getElementById("status");
 const resultEl=document.getElementById("result");
 const loginCard=document.getElementById("loginCard");
 const provisionCard=document.getElementById("provisionCard");
 const loginStatus=document.getElementById("loginStatus");
+const emailEl=document.getElementById("email");
+const passwordEl=document.getElementById("password");
+const loginBtn=document.getElementById("login");
 
 function showAdmin(session){
   if(!session){
@@ -66,35 +70,49 @@ function showAdmin(session){
 }
 
 async function init(){
-  const {data:{session}}=await supabase.auth.getSession();
-  showAdmin(session);
-  supabase.auth.onAuthStateChange((_event, session)=>showAdmin(session));
-}
-
-async function login(){
-  const email=document.getElementById("email").value.trim();
-  const password=document.getElementById("password").value;
-  loginStatus.textContent="Login...";
-  const {error}=await supabase.auth.signInWithPassword({email,password});
-  if(error){
-    loginStatus.textContent="Login gagal: "+error.message;
-    return;
+  try{
+    who.textContent="Menghubungkan ke CUANIFY Auth...";
+    const {data,error}=await supabaseClient.auth.getSession();
+    if(error) throw error;
+    showAdmin(data.session);
+  }catch(error){
+    who.textContent="Auth error: "+(error.message||String(error));
+    loginStatus.textContent="Koneksi Auth gagal. Coba refresh halaman.";
   }
-  loginStatus.textContent="Login berhasil.";
+  supabaseClient.auth.onAuthStateChange((_event,session)=>showAdmin(session));
 }
 
-document.getElementById("login").onclick=login;
-document.getElementById("logout").onclick=async()=>{
-  await supabase.auth.signOut();
-  resultEl.textContent="";
-  statusEl.textContent="Belum ada proses.";
-};
+async function handleAdminLogin(){
+  loginBtn.disabled=true;
+  loginStatus.textContent="Memproses login...";
+  try{
+    const email=emailEl.value.trim();
+    const password=passwordEl.value;
+    if(!email||!password){
+      throw new Error("Email dan password wajib diisi.");
+    }
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+    if(error) throw error;
+    loginStatus.textContent="Login berhasil.";
+    showAdmin(data.session);
+  }catch(error){
+    loginStatus.textContent="Login gagal: "+(error.message||String(error));
+  }finally{
+    loginBtn.disabled=false;
+  }
+}
+
+loginBtn.addEventListener("click",handleAdminLogin);
+passwordEl.addEventListener("keydown",(event)=>{
+  if(event.key==="Enter") handleAdminLogin();
+});
+
 async function run(batch){
   statusEl.textContent="Menjalankan batch "+batch+"...";
   resultEl.textContent="";
-  document.querySelectorAll("button").forEach(b=>b.disabled=true);
+  document.querySelectorAll("#one,#ten").forEach(b=>b.disabled=true);
   try{
-    const {data,error}=await supabase.functions.invoke("provision-legacy-members",{body:{batch_size:batch}});
+    const {data,error}=await supabaseClient.functions.invoke("provision-legacy-members",{body:{batch_size:batch}});
     if(error) throw error;
     statusEl.innerHTML='<span class="ok">SELESAI</span>';
     resultEl.textContent=JSON.stringify(data,null,2);
@@ -102,11 +120,19 @@ async function run(batch){
     statusEl.innerHTML='<span class="err">GAGAL</span>';
     resultEl.textContent=JSON.stringify(e,null,2);
   }finally{
-    document.querySelectorAll("button").forEach(b=>b.disabled=false);
+    document.querySelectorAll("#one,#ten").forEach(b=>b.disabled=false);
   }
 }
-document.getElementById("one").onclick=()=>run(1);
-document.getElementById("ten").onclick=()=>run(10);
+
+document.getElementById("one").addEventListener("click",()=>run(1));
+document.getElementById("ten").addEventListener("click",()=>run(10));
+document.getElementById("logout").addEventListener("click",async()=>{
+  await supabaseClient.auth.signOut();
+  resultEl.textContent="";
+  statusEl.textContent="Belum ada proses.";
+  loginStatus.textContent="";
+  showAdmin(null);
+});
 init();
 </script>
 </body>
