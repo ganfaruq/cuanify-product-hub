@@ -50,11 +50,13 @@
 </section>
 
 <section id="affiliate" class="section panel-section" hidden>
-  <div class="section-title"><h2>Affiliate</h2><span>CUANIFY</span></div>
-  <div class="panel-card">
-    <div class="eyebrow">PROGRAM AFFILIATE</div>
-    <h2 style="font:900 28px/1 Raleway;margin:12px 0 8px;letter-spacing:-1px">Jual produk. Dapat komisi.</h2>
-    <p style="color:#aaa1b5;font-size:12px;line-height:1.6;margin:0">Dashboard affiliate sedang kami siapkan. Nanti semua link promosi, penjualan, dan komisi kamu ada di sini.</p>
+  <div class="section-title"><h2>Affiliate</h2><span id="affiliateStatusLabel">PROGRAM</span></div>
+  <div id="affiliateContent">
+    <div class="panel-card">
+      <div class="eyebrow">PROGRAM AFFILIATE</div>
+      <h2>Jual produk. Dapat komisi.</h2>
+      <p>Memuat dashboard affiliate kamu...</p>
+    </div>
   </div>
 </section>
 
@@ -128,9 +130,59 @@ const grid=document.getElementById("grid");
 const search=document.getElementById("search");
 const count=document.getElementById("count");
 let owned=new Set();
+let affiliateData=null;
 
 function escapeHtml(value){
   return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+
+function rupiah(value){
+  const n=Number(value||0);
+  return new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(n);
+}
+
+function renderAffiliate(){
+  const wrap=document.getElementById("affiliateContent");
+  const label=document.getElementById("affiliateStatusLabel");
+  if(!wrap||!affiliateData) return;
+
+  if(!affiliateData.enabled){
+    label.textContent="BELUM AKTIF";
+    wrap.innerHTML='<div class="panel-card"><div class="eyebrow">PROGRAM AFFILIATE</div><h2>Siap mulai jualan?</h2><p>Akun affiliate kamu belum diaktifkan. Setelah diaktifkan, kode affiliate, penjualan, komisi, dan data pembeli yang terkunci akan tampil di sini.</p></div>';
+    return;
+  }
+
+  label.textContent=String(affiliateData.status||"AKTIF").toUpperCase();
+  const code=affiliateData.code||"-";
+  wrap.innerHTML=
+    '<div class="panel-card">'+
+      '<div class="eyebrow">KODE AFFILIATE</div>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px">'+
+        '<strong style="font:900 26px Raleway;letter-spacing:-1px">'+escapeHtml(code)+'</strong>'+
+        '<button id="copyAffiliateCode" class="logout" type="button">SALIN</button>'+
+      '</div>'+
+      '<p style="margin-top:9px">Komisi standar: <b>'+escapeHtml(affiliateData.commission_rate)+'%</b></p>'+
+    '</div>'+
+    '<div class="affiliate-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px">'+
+      '<div class="account-card"><span class="eyebrow">PENJUALAN</span><h3 style="font-size:20px">'+rupiah(affiliateData.total_sales)+'</h3><p>'+affiliateData.total_orders+' order</p></div>'+
+      '<div class="account-card"><span class="eyebrow">PENDING</span><h3 style="font-size:20px">'+rupiah(affiliateData.pending_commission)+'</h3><p>Menunggu proses</p></div>'+
+      '<div class="account-card"><span class="eyebrow">DISETUJUI</span><h3 style="font-size:20px">'+rupiah(affiliateData.approved_commission)+'</h3><p>Siap dibayar</p></div>'+
+      '<div class="account-card"><span class="eyebrow">DIBAYAR</span><h3 style="font-size:20px">'+rupiah(affiliateData.paid_commission)+'</h3><p>Total terbayar</p></div>'+
+    '</div>'+
+    '<div class="account-card" style="margin-top:10px">'+
+      '<div class="eyebrow">LOCK BUYER</div>'+
+      '<h3 style="font-size:22px">'+Number(affiliateData.locked_buyers||0)+' pembeli</h3>'+
+      '<p>Pembeli yang sudah terkunci ke affiliate ini akan tetap teratribusi sesuai aturan program. Data lama akan dimigrasikan setelah mapping affiliate selesai.</p>'+
+    '</div>';
+
+  document.getElementById("copyAffiliateCode")?.addEventListener("click",async()=>{
+    try{
+      await navigator.clipboard.writeText(code);
+      const b=document.getElementById("copyAffiliateCode");
+      b.textContent="TERSALIN";
+      setTimeout(()=>{if(b)b.textContent="SALIN"},1400);
+    }catch(_){}
+  });
 }
 
 function render(){
@@ -233,6 +285,15 @@ async function boot(){
 
   count.textContent=owned.size+" akses";
   render();
+
+  const {data:affiliate,error:affiliateError}=await supabase.rpc("get_my_affiliate_dashboard");
+  if(!affiliateError && affiliate){
+    affiliateData=affiliate;
+    renderAffiliate();
+  }else{
+    affiliateData={enabled:false};
+    renderAffiliate();
+  }
 }
 
 search.addEventListener("input",render);
