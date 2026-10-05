@@ -5,7 +5,7 @@ const SUPABASE_KEY = "sb_publishable_6x3fyciQNza50vtKq1S53w_xsogvAJc";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const scriptUrl = new URL(document.currentScript?.src || import.meta.url, location.href);
-const requiredProduct = decodeURIComponent(scriptUrl.searchParams.get("product") || "").trim();
+const requiredSlug = decodeURIComponent(scriptUrl.searchParams.get("product") || "").trim().toLowerCase();
 
 document.documentElement.style.visibility = "hidden";
 
@@ -28,13 +28,20 @@ const fail = (message) => {
 };
 
 try {
+  if (!requiredSlug) {
+    fail("Produk belum ditentukan.");
+    throw new Error("missing product slug");
+  }
+
   const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
   if (sessionError || !session) {
     redirect("login.html");
     throw new Error("not authenticated");
   }
 
   const { data: firstLogin, error: firstLoginError } = await supabase.rpc("get_my_first_login_state");
+
   if (firstLoginError) {
     fail("Status akun belum dapat diperiksa.");
     throw firstLoginError;
@@ -45,25 +52,23 @@ try {
     throw new Error("first login");
   }
 
-  if (!requiredProduct) {
-    document.documentElement.style.visibility = "visible";
-  } else {
-    const { data: access, error: accessError } = await supabase.rpc("get_my_product_access");
-    if (accessError) {
-      fail("Akses produk belum dapat diperiksa.");
-      throw accessError;
-    }
+  const { data: access, error: accessError } = await supabase.rpc("get_my_product_access");
 
-    const normalize = (value) => String(value || "").trim().toLowerCase();
-    const allowed = (access || []).some(product => normalize(product.product_name) === normalize(requiredProduct));
-
-    if (!allowed) {
-      fail("Akun kamu belum memiliki akses ke produk ini.");
-      throw new Error("product access denied");
-    }
-
-    document.documentElement.style.visibility = "visible";
+  if (accessError) {
+    fail("Akses produk belum dapat diperiksa.");
+    throw accessError;
   }
+
+  const allowed = (access || []).some(product =>
+    String(product.slug || "").trim().toLowerCase() === requiredSlug
+  );
+
+  if (!allowed) {
+    fail("Akun kamu belum memiliki akses ke produk ini.");
+    throw new Error("product access denied");
+  }
+
+  document.documentElement.style.visibility = "visible";
 } catch (error) {
   console.warn("[CUANIFY member gate]", error?.message || error);
 }
