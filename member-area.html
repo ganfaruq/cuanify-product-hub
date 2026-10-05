@@ -110,7 +110,7 @@ function render(){
       '<div class="product-main">'+
         '<h3>'+escapeHtml(p.name)+'</h3>'+
         '<p>'+escapeHtml(p.desc)+'</p>'+
-        '<div class="product-action">'+(hasAccess?"BUKA PRODUK →":"BELUM ADA AKSES")+'</div>'+
+        '<div class="product-action">'+(hasAccess?"BUKA PRODUK →":(p.active?"BELUM ADA AKSES":"LEGACY / BELUM AKTIF"))+'</div>'+
       '</div>';
 
     if(hasAccess && p.url){
