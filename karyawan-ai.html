@@ -133,16 +133,115 @@ h1{font-size:clamp(42px,7vw,82px);line-height:.88;letter-spacing:-3px;margin:18p
 
 <div class="section-head">
   <h2>Bonus</h2>
-  <p>Materi bonus tetap ditampilkan sebagai bagian dari akses. Link yang memang belum tersedia dibiarkan kosong, tidak digantikan dengan link palsu.</p>
+  <p>Bonus sekarang dibuat sebagai daftar tab. Klik nama bonus untuk membuka isi dan langkah penggunaannya.</p>
 </div>
 
-<section class="bonus-grid">
-  <article class="bonus"><h3>Lisensi Boleh Jual Lagi</h3><p>Dokumen lisensi lengkap: hak penjual, harga minimum, aturan promosi, distribusi akses, larangan, dan sanksi.</p></article>
-  <article class="bonus"><h3>Buat Web Jualan</h3><p>Template website promosi yang tombol ordernya bisa diarahkan ke WhatsApp Kakak.</p></article>
-  <article class="bonus"><h3>Web Akses</h3><p>Portal member untuk membuka Karyawan AI, bonus, serta tutorial penggunaan.</p></article>
-  <article class="bonus"><h3>Bahan Promosi AI</h3><p>Akses DITA untuk membuat banner, broadcast, copywriting, script video, follow-up, dan closing.</p></article>
-  <article class="bonus"><h3>Cara Jualan Biar Cuan</h3><p>Panduan menjual melalui WhatsApp, TikTok, Facebook, Threads, dan Instagram.</p></article>
+<section class="bonus-tabs-wrap" id="bonusTabs">
+  <div class="bonus-tabs" role="tablist" aria-label="Daftar bonus Karyawan AI">
+    <button class="bonus-tab active" type="button" role="tab" aria-selected="true" data-tab="lisensi">Lisensi</button>
+    <button class="bonus-tab" type="button" role="tab" aria-selected="false" data-tab="webJualan">Web Jualan</button>
+    <button class="bonus-tab" type="button" role="tab" aria-selected="false" data-tab="webAkses">Web Akses</button>
+    <button class="bonus-tab" type="button" role="tab" aria-selected="false" data-tab="dita">Bahan Promosi AI</button>
+    <button class="bonus-tab" type="button" role="tab" aria-selected="false" data-tab="caraJualan">Cara Jualan</button>
+  </div>
+
+  <div class="bonus-panel active" id="bonus-lisensi" role="tabpanel">
+    <span class="bonus-kicker">BONUS 01</span>
+    <h3>Lisensi Boleh Jual Lagi</h3>
+    <p>Dokumen lisensi lengkap: hak penjual, harga minimum, aturan promosi, distribusi akses, larangan, dan sanksi.</p>
+  </div>
+
+  <div class="bonus-panel" id="bonus-webJualan" role="tabpanel" hidden>
+    <span class="bonus-kicker">BONUS 02</span>
+    <h3>Buat Web Jualan</h3>
+    <p>Template website promosi yang tombol ordernya bisa diarahkan ke WhatsApp Kakak.</p>
+    <div class="step-list">
+      <div class="step"><b>01 · Siapkan data</b><span>Nama, email, dan nomor WhatsApp aktif.</span></div>
+      <div class="step"><b>02 · Ambil file pribadi</b><span>Gunakan file ZIP yang sesuai dengan nama Kakak.</span></div>
+      <div class="step"><b>03 · Upload index.html</b><span>Masukkan ke folder <code>public_html</code> hosting.</span></div>
+      <div class="step"><b>04 · Tes semua tombol</b><span>Pastikan WhatsApp tujuan tidak nyasar.</span></div>
+    </div>
+  </div>
+
+  <div class="bonus-panel" id="bonus-webAkses" role="tabpanel" hidden>
+    <span class="bonus-kicker">BONUS 03</span>
+    <h3>Web Akses</h3>
+    <p>Portal member ini untuk membuka Karyawan AI, bonus, serta tutorial penggunaan.</p>
+    <div class="step-list">
+      <div class="step"><b>01 · Simpan alamat web</b><span>Tambahkan ke bookmark atau layar utama ponsel.</span></div>
+      <div class="step"><b>02 · Mulai dari tutorial</b><span>Buka materi Mulai dari sini sebelum bekerja.</span></div>
+      <div class="step"><b>03 · Pilih Karyawan</b><span>Gunakan spesialis sesuai tugasnya.</span></div>
+      <div class="step"><b>04 · Hubungi admin</b><span>Jika tombol akses belum aktif atau bermasalah.</span></div>
+    </div>
+  </div>
+
+  <div class="bonus-panel" id="bonus-dita" role="tabpanel" hidden>
+    <span class="bonus-kicker">BONUS 04</span>
+    <h3>Bahan Promosi AI</h3>
+    <p>Akses DITA untuk membuat banner, broadcast, copywriting, script video, follow-up, dan closing.</p>
+    <div class="step-list">
+      <div class="step"><b>01 · Buka DITA</b><span>Gunakan tombol akses pada bonus ini.</span></div>
+      <div class="step"><b>02 · Masukkan link jualan</b><span>CTA wajib menuju link milik Kakak.</span></div>
+      <div class="step"><b>03 · Pilih bahan promosi</b><span>Minta poster, status WA, script, atau broadcast.</span></div>
+      <div class="step"><b>04 · Bawa chat keberatan</b><span>DITA membantu menyusun jawaban closing.</span></div>
+    </div>
+    <a class="btn primary bonus-access" href="https://chatgpt.com/g/g-6a615bc6288c81918f9b4b423d7d35b8-dita" target="_blank" rel="noopener">BUKA DITA ↗</a>
+  </div>
+
+  <div class="bonus-panel" id="bonus-caraJualan" role="tabpanel" hidden>
+    <span class="bonus-kicker">BONUS 05</span>
+    <h3>Cara Jualan Biar Cuan</h3>
+    <p>Panduan menjual melalui WhatsApp, TikTok, Facebook, Threads, dan Instagram.</p>
+    <div class="step-list">
+      <div class="step"><b>01 · MULAI PROMOSI DI MEDIA SOSIAL</b><span>Pilih media sosial yang paling sering Kakak gunakan: WhatsApp, TikTok, Facebook, Threads, atau Instagram. Mulai dengan konten masalah, edukasi, dan demo hasil Karyawan AI.</span></div>
+      <div class="step"><b>02 · PROMOSIKAN WEB JUALAN</b><span>Bagikan web jualan pribadi milik Kakak. Semua tombol pemesanan di web tersebut akan diarahkan ke WhatsApp Kakak sendiri. Untuk mendapatkan web jualan pribadi, hubungi admin.</span></div>
+      <div class="step"><b>03 · CALON PEMBELI MENGHUBUNGI KAKAK</b><span>Tanyakan kebutuhan mereka, jelaskan manfaat Karyawan AI yang paling relevan, lalu jawab keberatannya. Jika bingung menyusun balasan, gunakan DITA.</span></div>
+      <div class="step"><b>04 · TERIMA TRANSFER Rp147.000</b><span>Jika calon pembeli setuju, arahkan pembayaran sebesar Rp147.000 langsung ke rekening atau metode pembayaran milik Kakak. Pastikan uang benar-benar sudah masuk sebelum memberikan akses.</span></div>
+      <div class="step"><b>05 · KIRIM WEB AKSES</b><span>Setelah pembayaran terkonfirmasi, kirim Web Akses Karyawan AI kepada pembeli. Dari web itu, mereka bisa membuka Karyawan AI, bonus, lisensi, serta tutorialnya.</span></div>
+      <div class="step"><b>06 · ULANGI SAMPAI CUAN</b><span>Promosi → Kirim Web Jualan → Layani Chat → Terima Rp147.000 → Kirim Web Akses.</span></div>
+    </div>
+  </div>
 </section>
+
+<style>
+.bonus-tabs-wrap{border:3px solid var(--line);box-shadow:6px 6px 0 var(--line);background:#fff}
+.bonus-tabs{display:flex;gap:0;flex-wrap:wrap;border-bottom:3px solid var(--line);background:#111}
+.bonus-tab{appearance:none;border:0;border-right:2px solid var(--line);background:#111;color:#fff;padding:15px 16px;cursor:pointer;font-size:12px;font-weight:950;letter-spacing:.2px}
+.bonus-tab:last-child{border-right:0}
+.bonus-tab:hover{background:#2a2a2a}
+.bonus-tab.active{background:var(--yellow);color:var(--ink)}
+.bonus-panel{padding:28px;background:#fff}
+.bonus-panel[hidden]{display:none}
+.bonus-kicker{display:inline-block;padding:6px 9px;background:var(--yellow);border:2px solid var(--line);font-size:10px;font-weight:950}
+.bonus-panel h3{font-size:32px;line-height:1.05;margin:14px 0 8px;letter-spacing:-1px}
+.bonus-panel>p{margin:0 0 22px;color:#555;line-height:1.7;font-size:14px;max-width:850px}
+.step-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.step{padding:16px;border:2px solid var(--line);background:#fffdf1}
+.step b{display:block;font-size:12px;margin-bottom:7px}
+.step span{display:block;color:#555;line-height:1.65;font-size:13px}
+.step code{background:#eee;padding:2px 5px;border-radius:3px}
+.bonus-access{margin-top:18px;max-width:220px}
+@media(max-width:640px){.bonus-tabs{display:grid;grid-template-columns:1fr 1fr}.bonus-tab{border-bottom:2px solid var(--line);border-right:2px solid var(--line)}.bonus-tab:nth-child(even){border-right:0}.bonus-panel{padding:22px}.bonus-panel h3{font-size:26px}.step-list{grid-template-columns:1fr}}
+</style>
+
+<script>
+(function(){
+  const tabs=[...document.querySelectorAll('.bonus-tab')];
+  const panels=[...document.querySelectorAll('.bonus-panel')];
+  tabs.forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      const id=tab.dataset.tab;
+      tabs.forEach(t=>{const active=t===tab;t.classList.toggle('active',active);t.setAttribute('aria-selected',String(active));});
+      panels.forEach(panel=>{
+        const active=panel.id==='bonus-'+id;
+        panel.hidden=!active;
+        panel.classList.toggle('active',active);
+      });
+      document.getElementById('bonusTabs').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+})();
+</script>
 
 <section class="info">
   <h2>Butuh bantuan?</h2>
