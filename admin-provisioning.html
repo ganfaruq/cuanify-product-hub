@@ -40,6 +40,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:#050506;border-radius:
   <button id="ten">PROVISION 10</button>
   <button id="hundred">PROVISION 100</button>
   <button id="thousand">PROVISION 1000</button>
+  <button id="retryFailed" style="background:#8b5cf6;color:#fff">RETRY FAILED 100</button>
   <button id="logout" style="background:#2b2b31;color:#fff">LOGOUT</button>
 </div>
 <div class="card">
@@ -142,7 +143,7 @@ async function refreshStats(){
 async function validateBatch(limit){
   statusEl.textContent="Memvalidasi "+limit+" kandidat...";
   resultEl.textContent="";
-  document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=true);
+  document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand,#retryFailed").forEach(b=>b.disabled=true);
   const summary={requested:limit,validated_email:0,validated_phone:0,validated_total:0,runs:0,errors:[]};
   try{
     const chunks=Math.ceil(limit/100);
@@ -170,8 +171,8 @@ async function validateBatch(limit){
   }
 }
 
-async function invokeBatch(batch){
-  const {data,error}=await supabaseClient.functions.invoke("provision-legacy-members",{body:{batch_size:batch}});
+async function invokeBatch(batch, retryFailed=false){
+  const {data,error}=await supabaseClient.functions.invoke("provision-legacy-members",{body:{batch_size:batch,retry_failed:retryFailed}});
   if(error) throw error;
   return data;
 }
@@ -190,6 +191,48 @@ async function run(batch){
     resultEl.textContent=JSON.stringify(e,null,2);
   }finally{
     document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=false);
+  }
+}
+
+async function runFailedRecovery(total){
+  statusEl.textContent="Memulihkan akun gagal "+total+" akun, dengan password temporary random...";
+  resultEl.textContent="";
+  document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand,#retryFailed").forEach(b=>b.disabled=true);
+  const summary={requested:total,processed:0,created_accounts:0,mapped_members:0,failed:0,runs:0,errors:[]};
+  try{
+    const chunks=Math.ceil(total/10), concurrency=5;
+    for(let start=0;start<chunks;start+=concurrency){
+      const jobs=[];
+      for(let i=start;i<Math.min(start+concurrency,chunks);i++){
+        jobs.push(invokeBatch(Math.min(10,total-(i*10)),true));
+      }
+      const results=await Promise.allSettled(jobs);
+      for(const r of results){
+        summary.runs++;
+        if(r.status==="fulfilled"){
+          const d=r.value||{};
+          summary.processed+=Number(d.processed||0);
+          summary.created_accounts+=Number(d.created_accounts||0);
+          summary.mapped_members+=Number(d.mapped_members||0);
+          summary.failed+=Number(d.failed||0);
+          if(d.error) summary.errors.push(d.error);
+        }else{
+          summary.failed++;
+          summary.errors.push(r.reason?.message||String(r.reason));
+        }
+      }
+      statusEl.textContent="Recovery progress: "+summary.processed+" / "+total+" diproses...";
+      resultEl.textContent=JSON.stringify(summary,null,2);
+      await refreshStats();
+    }
+    statusEl.innerHTML='<span class="ok">RECOVERY SELESAI</span>';
+    resultEl.textContent=JSON.stringify(summary,null,2);
+    await refreshStats();
+  }catch(e){
+    statusEl.innerHTML='<span class="err">RECOVERY GAGAL</span>';
+    resultEl.textContent=JSON.stringify(summary,null,2)+"\n\n"+(e.message||String(e));
+  }finally{
+    document.querySelectorAll("#validate100,#validate1000,#one,#ten,#hundred,#thousand,#retryFailed").forEach(b=>b.disabled=false);
   }
 }
 
@@ -241,6 +284,7 @@ document.getElementById("one").addEventListener("click",()=>run(1));
 document.getElementById("ten").addEventListener("click",()=>run(10));
 document.getElementById("hundred").addEventListener("click",()=>runLarge(100));
 document.getElementById("thousand").addEventListener("click",()=>runLarge(1000));
+document.getElementById("retryFailed").addEventListener("click",()=>runFailedRecovery(100));
 
 document.getElementById("logout").addEventListener("click",async()=>{
   await supabaseClient.auth.signOut();
