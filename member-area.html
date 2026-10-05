@@ -3,52 +3,168 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Member Area | CUANIFY</title>
+<meta name="theme-color" content="#070707">
+<title>CUANIFY | Member Area</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Raleway:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Raleway:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#070707;--surface:#111113;--surface2:#17171a;--line:#29292f;--text:#f7f7f8;--muted:#9999a2;--purple:#8b5cf6;--purple2:#a78bfa}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Nunito,system-ui,sans-serif}.app{max-width:760px;margin:auto;padding-bottom:50px}.top{height:72px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;background:rgba(7,7,7,.9);backdrop-filter:blur(16px);z-index:5}.logo{font:900 22px Raleway}.logo span{color:var(--purple2)}.logout{border:1px solid var(--line);background:var(--surface);color:#bbb;padding:9px 12px;border-radius:11px;font-size:11px;font-weight:900;cursor:pointer}.hero{padding:25px 20px 16px}.eyebrow{font-size:10px;letter-spacing:.12em;color:#cdbdff;font-weight:900}.hero h1{font:900 35px Raleway;letter-spacing:-1.4px;margin:9px 0 5px}.hero p{margin:0;color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px 20px}.stat{padding:17px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}.stat b{display:block;font:900 25px Raleway}.stat span{font-size:10px;color:var(--muted)}section{padding:0 20px}.section-head{display:flex;justify-content:space-between;align-items:end;margin:5px 0 13px}.section-head h2{font:900 20px Raleway;margin:0}.section-head span{font-size:11px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card{display:flex;flex-direction:column;min-height:180px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:17px;transition:.18s}.card:hover{transform:translateY(-2px);border-color:#4d3968;background:var(--surface2)}.icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(139,92,246,.13);border:1px solid #4a3565;color:#d6c7ff;font:900 12px Raleway}.card h3{font:900 15px Raleway;line-height:1.25;margin:13px 0 5px}.card p{font-size:11px;color:var(--muted);line-height:1.45;margin:0}.open{margin-top:auto;padding-top:15px;color:#cdbdff;font-size:11px;font-weight:900}.state{margin:20px;padding:30px;text-align:center;border:1px dashed var(--line);border-radius:18px;color:var(--muted);font-size:12px;line-height:1.6}.footer{text-align:center;color:#555;font-size:10px;padding:30px 20px}@media(max-width:560px){.grid{grid-template-columns:1fr}.hero h1{font-size:31px}}
+:root{--bg:#070707;--surface:#111113;--surface2:#17171a;--text:#f7f7f8;--muted:#9a9aa3;--line:#28282d;--purple:#8b5cf6;--purple2:#a78bfa;--soft:rgba(139,92,246,.14)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Nunito,system-ui,sans-serif;padding-bottom:70px}a{text-decoration:none;color:inherit}.app{max-width:680px;margin:auto}
+.topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(18px);background:rgba(7,7,7,.88);border-bottom:1px solid rgba(255,255,255,.06)}
+.topbar-inner{height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}.logo{font:900 22px Raleway;letter-spacing:-.7px}.logo span{color:var(--purple2)}
+.top-actions{display:flex;align-items:center;gap:9px}.member-label{color:#777;font-size:10px;font-weight:800}.logout{border:1px solid var(--line);background:var(--surface);color:#bbb;padding:9px 12px;border-radius:11px;font-size:11px;font-weight:900;cursor:pointer}
+.hero{padding:22px 0 8px}.hero-card{position:relative;overflow:hidden;padding:27px;border-radius:28px;background:radial-gradient(circle at 90% 15%,rgba(167,139,250,.33),transparent 27%),radial-gradient(circle at 10% 110%,rgba(139,92,246,.2),transparent 32%),linear-gradient(135deg,#16121f,#0f0f11 65%);border:1px solid #33264a}.hero-card:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;border:1px solid rgba(167,139,250,.18);right:-65px;top:-70px}
+.eyebrow{display:inline-flex;color:#ddd0ff;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.hero h1{font:900 clamp(34px,5vw,55px)/.98 Raleway;letter-spacing:-2px;margin:13px 0 8px}.hero p{margin:0;color:#aaa1b5;font-size:12px;line-height:1.6}.email{margin-top:12px;color:#777;font-size:10px;position:relative;z-index:1}
+.section{padding:20px 0}.section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:14px}.section-title h2{font:900 21px Raleway;letter-spacing:-.8px;margin:0}.section-title span{color:var(--muted);font-size:11px}
+.controls{display:flex;gap:10px;margin-bottom:16px}.search-wrap{position:relative;flex:1}.search{width:100%;height:48px;padding:0 16px 0 42px;border-radius:15px;border:1px solid var(--line);background:var(--surface);color:white;outline:none}.search:focus{border-color:#59417c;box-shadow:0 0 0 4px rgba(139,92,246,.1)}.search::placeholder{color:#6f6f77}.search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#777}
+.product-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.product{position:relative;display:block;background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;transition:.18s}.product:hover{background:var(--surface2);border-color:#4d3968;transform:translateY(-2px)}
+.product-cover{height:155px;position:relative;display:grid;place-items:center;background:radial-gradient(circle at 82% 20%,rgba(167,139,250,.25),transparent 27%),linear-gradient(145deg,#21192f,#111114 72%)}.product-placeholder{width:65px;height:65px;border-radius:19px;display:grid;place-items:center;background:var(--soft);border:1px solid #584275;color:#d7c9ff;font:900 17px Raleway}.product-tag{position:absolute;left:11px;top:11px;padding:6px 8px;border-radius:999px;background:rgba(8,8,9,.82);border:1px solid rgba(255,255,255,.1);color:#ddd5ea;font-size:8px;font-weight:900}.lock{position:absolute;right:11px;top:11px;width:29px;height:29px;border-radius:9px;display:grid;place-items:center;background:rgba(8,8,9,.82);border:1px solid rgba(255,255,255,.1);font-size:12px}
+.product-main{padding:14px}.product-main h3{margin:0;font:900 15px/1.25 Raleway;letter-spacing:-.35px}.product-main p{margin:6px 0 10px;color:var(--muted);font-size:10.5px;line-height:1.5;min-height:31px}.product-action{font-size:10px;font-weight:900;color:#cdbdff}.locked .product-action{color:#666}.locked{opacity:.72}
+.empty{grid-column:1/-1;padding:40px 15px;text-align:center;color:#777;font-size:12px;border:1px dashed var(--line);border-radius:18px}.footer{padding:30px 20px 10px;color:#555;text-align:center;font-size:10px}
+@media(max-width:720px){.product-list{grid-template-columns:1fr}.app{max-width:100%}}@media(max-width:520px){.topbar-inner{padding:0 16px}.member-label{display:none}.hero,.section{padding-left:16px;padding-right:16px}.hero-card{padding:23px;border-radius:23px}.hero h1{font-size:38px}.product-cover{height:145px}}
 </style>
 </head>
 <body>
-<div class="app">
-<header class="top"><div class="logo">CUANIFY<span>.</span></div><button id="logout" class="logout">KELUAR</button></header>
-<main>
-<div class="hero"><div class="eyebrow">MEMBER AREA</div><h1 id="greeting">Halo.</h1><p>Semua produk yang sudah kamu miliki ada di sini.</p></div>
-<div class="stats"><div class="stat"><b id="count">0</b><span>PRODUK AKTIF</span></div><div class="stat"><b>CUANIFY</b><span>MEMBER ACCESS</span></div></div>
-<section><div class="section-head"><h2>Produk Saya</h2><span id="email"></span></div><div id="grid" class="grid"><div class="state">Memuat akses produk...</div></div></section>
-</main>
-<div class="footer">© 2026 CUANIFY. Member Area.</div>
+<div class="app" id="app" hidden>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">CUANIFY<span>.</span></div>
+    <div class="top-actions"><span id="memberLabel" class="member-label"></span><button id="logout" class="logout">KELUAR</button></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-card">
+    <div class="eyebrow">MEMBER AREA</div>
+    <h1 id="greeting">Halo.</h1>
+    <p>Semua produk CUANIFY ada di satu tempat. Produk yang kamu miliki bisa langsung dibuka dari sini.</p>
+    <div id="email" class="email"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title"><h2>Produk CUANIFY</h2><span id="count">0 akses</span></div>
+  <div class="controls"><div class="search-wrap"><span class="search-icon">⌕</span><input id="search" class="search" type="search" placeholder="Cari produk..." autocomplete="off"></div></div>
+  <main id="grid" class="product-list" aria-live="polite"><div class="empty">Memuat produk...</div></main>
+</section>
+
+<footer class="footer">© 2026 CUANIFY. Member Area.</footer>
 </div>
+
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-const supabase=createClient("https://nwjmtnaqbiwhrmgimyqy.supabase.co","sb_publishable_6x3fyciQNza50vtKq1S53w_xsogvAJc");
-const grid=document.getElementById("grid"),count=document.getElementById("count"),emailEl=document.getElementById("email"),greeting=document.getElementById("greeting");
-const {data:{session}}=await supabase.auth.getSession();
-if(!session){location.href="login.html"}
-else{
- const {data:firstLogin,error:firstLoginError}=await supabase.rpc("get_my_first_login_state");
- if(firstLoginError){location.href="login.html"}
- else if(firstLogin?.required){location.href="change-password.html"}
- else{
- emailEl.textContent=session.user.email||"";
- const name=(session.user.user_metadata?.name||session.user.email?.split("@")[0]||"Member");
- greeting.textContent="Halo, "+name+".";
- const {data,error}=await supabase.rpc("get_my_product_access");
- if(error){grid.innerHTML='<div class="state">Akses member belum terhubung. Hubungi admin untuk aktivasi akun.</div>'}
- else if(!data?.length){grid.innerHTML='<div class="state">Belum ada produk aktif di akun ini.</div>'}
- else{
-  count.textContent=data.length;
-  grid.innerHTML=data.map(p=>{
-   const mark=(p.product_name||"CUANIFY").replace(/[^A-Z0-9]/gi,"").slice(0,5).toUpperCase();
-   return '<a class="card" href="'+(p.access_url||"#")+'" target="_blank" rel="noopener"><div class="icon">'+mark+'</div><h3>'+p.product_name+'</h3><p>'+((p.product_description||"Akses produk CUANIFY.")+'</p><div class="open">BUKA PRODUK →</div></a>'
+
+const supabase=createClient(
+  "https://nwjmtnaqbiwhrmgimyqy.supabase.co",
+  "sb_publishable_6x3fyciQNza50vtKq1S53w_xsogvAJc"
+);
+
+const products=[
+  {name:"VIP MEMBER",cat:"VIP Member",mark:"VIP",desc:"Semua akses CUANIFY untuk member.",slug:"vip-member",url:"vip-member.html"},
+  {name:"CUANIFY TOOLS",cat:"AI Tools",mark:"TOOLS",desc:"Tools AI lengkap untuk kebutuhan digital.",slug:"cuanify-tools",url:"cuanify-tools.html"},
+  {name:"EDUPOSTERGPT",cat:"AI Tools",mark:"EP",desc:"Buat poster edukasi dengan bantuan AI.",slug:"edupostergpt",url:"edupostergpt.html"},
+  {name:"INSTANMEDIA AI",cat:"AI Tools",mark:"IM",desc:"Buat materi visual dan konten dengan AI.",slug:"instanmedia-ai",url:"instanmedia.html"},
+  {name:"PLATINUM MEMBER",cat:"VIP Member",mark:"PLAT",desc:"Akses modul dan bonus khusus Platinum Member.",slug:"platinum-member",url:"platinum-member.html"},
+  {name:"CUANIMASI",cat:"AI Tools",mark:"ANIMASI",desc:"Materi dan tools untuk bikin video AI.",slug:"cuanimasi",url:"cuanimasi.html"},
+  {name:"CUANIMASI THEME SONG",cat:"AI Tools",mark:"SONG",desc:"Materi utama dan bonus CUANIMASI Theme Song.",slug:"cuanimasi-theme-song",url:"cuanimasi-theme-song.html"},
+  {name:"JALUR LANGIT",cat:"VIP Member",mark:"LANGIT",desc:"Program belajar dan aset bisnis digital.",slug:"jalur-langit",url:"jalur-langit.html"},
+  {name:"BONGKAR RAHASIA JUALAN DI WA",cat:"Ebook",mark:"WA",desc:"Belajar jualan lewat WhatsApp.",slug:"bongkar-rahasia-jualan-wa",url:"bongkar-rahasia-jualan-wa.html"},
+  {name:"KELAS GAMBAR VIDEO AI",cat:"AI Tools",mark:"GVA",desc:"Kelas gambar dan video AI dari dasar sampai praktik.",slug:"kelas-gambar-video-ai",url:"kelas-gambar-video-ai.html"},
+  {name:"PROMPT VIRAL",cat:"Prompt",mark:"PV",desc:"Kumpulan prompt viral. Pilih, copy, langsung bikin.",slug:"prompt-viral",url:"prompt-viral.html"},
+  {name:"KARYAWAN AI",cat:"AI Tools",mark:"AI",desc:"Enam Karyawan AI untuk bantu pekerjaan digital.",slug:"karyawan-ai",url:"karyawan-ai.html"},
+  {name:"500 KODE CURANG CHATGPT",cat:"AI Tools",mark:"500",desc:"Kumpulan kode curang untuk memaksimalkan ChatGPT.",slug:"500-kode-curang-chatgpt",url:"500-kode-curang.html"}
+];
+
+const app=document.getElementById("app");
+const grid=document.getElementById("grid");
+const search=document.getElementById("search");
+const count=document.getElementById("count");
+let owned=new Set();
+
+function escapeHtml(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+
+function render(){
+  const q=search.value.trim().toLowerCase();
+  const filtered=products.filter(p=>!q||Object.values(p).join(" ").toLowerCase().includes(q));
+
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty">Produk tidak ditemukan.</div>';
+    return;
+  }
+
+  grid.innerHTML=filtered.map(p=>{
+    const hasAccess=owned.has(p.slug);
+    const cardClass=hasAccess?"product":"product locked";
+    const inner=
+      '<div class="product-cover">'+
+        '<div class="product-placeholder">'+escapeHtml(p.mark)+'</div>'+
+        '<span class="product-tag">'+escapeHtml(p.cat)+'</span>'+
+        (!hasAccess?'<span class="lock" title="Belum memiliki akses">🔒</span>':'')+
+      '</div>'+
+      '<div class="product-main">'+
+        '<h3>'+escapeHtml(p.name)+'</h3>'+
+        '<p>'+escapeHtml(p.desc)+'</p>'+
+        '<div class="product-action">'+(hasAccess?"BUKA PRODUK →":"BELUM ADA AKSES")+'</div>'+
+      '</div>';
+
+    return hasAccess
+      ? '<a class="'+cardClass+'" href="'+p.url+'">'+inner+'</a>'
+      : '<div class="'+cardClass+'" title="Produk ini belum terhubung ke akun kamu">'+inner+'</div>';
   }).join("");
- }
 }
+
+async function boot(){
+  const {data:{session}}=await supabase.auth.getSession();
+
+  if(!session){
+    location.replace("login.html");
+    return;
+  }
+
+  const {data:firstLogin,error:firstLoginError}=await supabase.rpc("get_my_first_login_state");
+
+  if(firstLoginError){
+    location.replace("login.html");
+    return;
+  }
+
+  if(firstLogin?.required){
+    location.replace("change-password.html");
+    return;
+  }
+
+  app.hidden=false;
+
+  const email=session.user.email||"";
+  document.getElementById("email").textContent=email;
+  document.getElementById("memberLabel").textContent=email;
+
+  const name=email.split("@")[0]||"Member";
+  document.getElementById("greeting").textContent="Halo, "+name+".";
+
+  const {data,error}=await supabase.rpc("get_my_product_access");
+
+  if(!error && Array.isArray(data)){
+    owned=new Set(
+      data.map(p=>p.product_slug).filter(Boolean)
+    );
+  }
+
+  count.textContent=owned.size+" akses";
+  render();
 }
-document.getElementById("logout").onclick=async()=>{await supabase.auth.signOut();location.href="login.html"};
+
+search.addEventListener("input",render);
+
+document.getElementById("logout").addEventListener("click",async()=>{
+  await supabase.auth.signOut();
+  location.replace("login.html");
+});
+
+boot();
 </script>
 </body>
 </html>
