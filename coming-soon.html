@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070707">
+<title>CUANIFY | Segera Hadir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Raleway:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070707;--surface:#111113;--line:#29292f;--text:#f7f7f8;--muted:#92929b;--purple:#8b5cf6;--purple2:#a78bfa}
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(139,92,246,.25),transparent 38%),
+    radial-gradient(circle at 10% 100%,rgba(139,92,246,.08),transparent 30%),
+    var(--bg);
+  color:var(--text);
+  font-family:Nunito,system-ui,sans-serif;
+  display:grid;
+  place-items:center;
+  padding:22px;
+}
+.shell{width:min(560px,100%);text-align:center}
+.brand{font:900 24px/1 Raleway;letter-spacing:-1px;margin-bottom:25px}
+.brand span{color:var(--purple2)}
+.card{
+  position:relative;
+  overflow:hidden;
+  background:rgba(17,17,19,.96);
+  border:1px solid var(--line);
+  border-radius:30px;
+  padding:44px 30px 38px;
+  box-shadow:0 24px 90px rgba(0,0,0,.48);
+}
+.glow{position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(139,92,246,.14);filter:blur(10px);top:-130px;left:50%;transform:translateX(-50%)}
+.icon{
+  position:relative;
+  width:82px;height:82px;margin:0 auto 23px;
+  display:grid;place-items:center;
+  border-radius:25px;
+  background:rgba(139,92,246,.13);
+  border:1px solid #4d3968;
+  color:#d9cbff;
+  font-size:34px;
+}
+.eyebrow{color:var(--purple2);font-size:10px;font-weight:900;letter-spacing:1.8px;margin-bottom:10px}
+h1{position:relative;font:900 clamp(31px,6vw,46px)/1 Raleway;letter-spacing:-1.5px;margin:0 0 12px}
+.product-name{position:relative;color:#ddd;font-size:15px;font-weight:900;margin-bottom:13px}
+.desc{position:relative;max-width:430px;margin:0 auto;color:var(--muted);font-size:13px;line-height:1.7}
+.badge{position:relative;display:inline-flex;margin-top:22px;padding:8px 12px;border-radius:999px;background:#1a1423;border:1px solid #493361;color:#d8c9ef;font-size:9px;font-weight:900;letter-spacing:.8px}
+.actions{position:relative;display:flex;justify-content:center;gap:10px;margin-top:27px;flex-wrap:wrap}
+a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 17px;border-radius:12px;text-decoration:none;font-size:11px;font-weight:900}
+.back{background:var(--purple);color:#fff}
+.logout{background:#171719;border:1px solid var(--line);color:#aaa}
+.msg{color:#aaa;font-size:13px}
+@media(max-width:480px){.card{padding:38px 21px 31px;border-radius:24px}h1{font-size:34px}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <div class="brand">CUANIFY<span>.</span></div>
+  <section class="card" id="card" hidden>
+    <div class="glow"></div>
+    <div class="icon">⌛</div>
+    <div class="eyebrow">COMING SOON</div>
+    <h1>Konten sedang disiapkan.</h1>
+    <div class="product-name" id="productName">Produk CUANIFY</div>
+    <p class="desc">
+      Produk ini sudah masuk ke Member Area. Kontennya sedang kami rapikan dan akan segera tersedia.
+      Untuk sementara, halaman ini menjadi tempat tunggunya.
+    </p>
+    <div class="badge">MATERI SEGERA HADIR</div>
+    <div class="actions">
+      <a class="back" href="member-area.html">← KEMBALI KE MEMBER AREA</a>
+    </div>
+  </section>
+  <div id="loading" class="msg">Memuat...</div>
+</main>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const supabase=createClient(
+  "https://nwjmtnaqbiwhrmgimyqy.supabase.co",
+  "sb_publishable_6x3fyciQNza50vtKq1S53w_xsogvAJc"
+);
+
+const slug=new URLSearchParams(location.search).get("slug")||"";
+const loading=document.getElementById("loading");
+const card=document.getElementById("card");
+const productName=document.getElementById("productName");
+
+function fail(message){
+  loading.textContent=message;
+}
+
+async function boot(){
+  const {data:{session}}=await supabase.auth.getSession();
+  if(!session){
+    location.replace("login.html");
+    return;
+  }
+
+  if(!slug){
+    location.replace("member-area.html");
+    return;
+  }
+
+  const {data:catalog,error:catalogError}=await supabase
+    .from("products")
+    .select("name,slug")
+    .eq("slug",slug)
+    .maybeSingle();
+
+  if(catalogError||!catalog){
+    fail("Produk tidak ditemukan.");
+    return;
+  }
+
+  const {data:access,error:accessError}=await supabase.rpc("get_my_product_access");
+
+  if(accessError||!Array.isArray(access)||!access.some(p=>p.slug===slug)){
+    fail("Produk ini belum terhubung ke akses akun kamu.");
+    setTimeout(()=>location.replace("member-area.html"),900);
+    return;
+  }
+
+  productName.textContent=catalog.name;
+  loading.hidden=true;
+  card.hidden=false;
+}
+
+boot();
+</script>
+</body>
+</html>
