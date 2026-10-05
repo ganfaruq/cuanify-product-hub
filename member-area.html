@@ -60,24 +60,24 @@ const supabase=createClient(
   "sb_publishable_6x3fyciQNza50vtKq1S53w_xsogvAJc"
 );
 
-const products=[
-  {name:"VIP MEMBER",cat:"VIP Member",mark:"VIP",desc:"Semua akses CUANIFY untuk member.",slug:"vip-member",url:"vip-member.html"},
-  {name:"CUANIFY TOOLS",cat:"AI Tools",mark:"TOOLS",desc:"Tools AI lengkap untuk kebutuhan digital.",slug:"cuanify-tools",url:"cuanify-tools.html"},
-  {name:"EDUPOSTERGPT",cat:"AI Tools",mark:"EP",desc:"Buat poster edukasi dengan bantuan AI.",slug:"edupostergpt",url:"edupostergpt.html"},
-  {name:"INSTANMEDIA AI",cat:"AI Tools",mark:"IM",desc:"Buat materi visual dan konten dengan AI.",slug:"instanmedia-ai",url:"instanmedia.html"},
-  {name:"PLATINUM MEMBER",cat:"VIP Member",mark:"PLAT",desc:"Akses modul dan bonus khusus Platinum Member.",slug:"platinum-member",url:"platinum-member.html"},
-  {name:"CUANIMASI",cat:"AI Tools",mark:"ANIMASI",desc:"Materi dan tools untuk bikin video AI.",slug:"cuanimasi",url:"cuanimasi.html"},
-  {name:"CUANIMASI THEME SONG",cat:"AI Tools",mark:"SONG",desc:"Materi utama dan bonus CUANIMASI Theme Song.",slug:"cuanimasi-theme-song",url:"cuanimasi-theme-song.html"},
-  {name:"JALUR LANGIT",cat:"VIP Member",mark:"LANGIT",desc:"Program belajar dan aset bisnis digital.",slug:"jalur-langit",url:"jalur-langit.html"},
-  {name:"BONGKAR RAHASIA JUALAN DI WA",cat:"Ebook",mark:"WA",desc:"Belajar jualan lewat WhatsApp.",slug:"bongkar-rahasia-jualan-wa",url:"bongkar-rahasia-jualan-wa.html"},
-  {name:"KELAS GAMBAR VIDEO AI",cat:"AI Tools",mark:"GVA",desc:"Kelas gambar dan video AI dari dasar sampai praktik.",slug:"kelas-gambar-video-ai",url:"kelas-gambar-video-ai.html"},
-  {name:"PROMPT VIRAL",cat:"Prompt",mark:"PV",desc:"Kumpulan prompt viral. Pilih, copy, langsung bikin.",slug:"prompt-viral",url:"prompt-viral.html"},
-  {name:"KARYAWAN AI",cat:"AI Tools",mark:"AI",desc:"Enam Karyawan AI untuk bantu pekerjaan digital.",slug:"karyawan-ai",url:"karyawan-ai.html"},
-  {name:"500 KODE CURANG CHATGPT",cat:"AI Tools",mark:"500",desc:"Kumpulan kode curang untuk memaksimalkan ChatGPT.",slug:"500-kode-curang-chatgpt",url:"500-kode-curang.html"},
-  {name:"IMAGO",cat:"Ebook",mark:"IM",desc:"Materi dan konten IMAGO. Konten sedang disiapkan.",slug:"imago-926ec8e7",url:null},
-  {name:"MEME KONTEMPLATIF",cat:"Konten",mark:"MEME",desc:"Materi dan konten Meme Kontemplatif. Konten sedang disiapkan.",slug:"meme-kontemplatif-de31addb",url:null},
-  {name:"CUAN AI TANPA JUALAN",cat:"Program",mark:"CUAN",desc:"Materi dan konten Cuan AI Tanpa Jualan. Konten sedang disiapkan.",slug:"cuan-ai-tanpa-jualan-58d2f1d0",url:null}
-];
+let products=[];
+
+function productMark(name){
+  const words=String(name||"").replace(/[^A-Za-z0-9]+/g," ").trim().split(/\s+/).filter(Boolean);
+  if(!words.length) return "P";
+  if(words.length===1) return words[0].slice(0,5).toUpperCase();
+  return words.slice(0,2).map(w=>w[0]).join("").toUpperCase();
+}
+
+function productCategory(name,active){
+  const n=String(name||"").toLowerCase();
+  if(!active) return "Legacy";
+  if(n.includes("member")||n.includes("jalur langit")||n.includes("pebisnis")) return "Member";
+  if(n.includes("kelas")||n.includes("course")||n.includes("modul")||n.includes("kulwa")) return "Kelas";
+  if(n.includes("prompt")||n.includes("kode")) return "Prompt";
+  if(n.includes("affiliate")||n.includes("affiliasi")) return "Affiliate";
+  return "Produk";
+}
 
 const app=document.getElementById("app");
 const grid=document.getElementById("grid");
