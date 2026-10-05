@@ -3,334 +3,65 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CUANIFY | Product Hub</title>
-<meta name="description" content="Satu tempat untuk akses produk, tools, prompt, kelas, dan membership CUANIFY.">
+<meta name="theme-color" content="#070707">
+<title>CUANIFY | Masuk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Raleway:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Raleway:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#070707;
-  --surface:#111113;
-  --surface-2:#17171a;
-  --surface-3:#1e1e22;
-  --text:#f7f7f8;
-  --muted:#9a9aa3;
-  --line:#28282d;
-  --purple:#8b5cf6;
-  --purple-2:#a78bfa;
-  --purple-soft:rgba(139,92,246,.14);
-  --white:#fff;
-}
+:root{--bg:#070707;--surface:#111113;--surface2:#0c0c0e;--line:#29292f;--text:#f7f7f8;--muted:#92929b;--purple:#8b5cf6;--purple2:#a78bfa}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:"Nunito",system-ui,sans-serif;
-  padding-bottom:82px;
-}
-a{text-decoration:none;color:inherit}
-button,input{font:inherit}
-.app{max-width:680px;margin:auto}
-.topbar{
-  position:sticky;top:0;z-index:20;
-  backdrop-filter:blur(18px);
-  background:rgba(7,7,7,.86);
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-.topbar-inner{
-  height:72px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 22px;
-}
-.logo{
-  font-family:"Raleway",sans-serif;font-size:22px;font-weight:900;letter-spacing:-.7px;
-}
-.logo span{color:var(--purple-2)}
-.status{display:none}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--purple);box-shadow:0 0 12px var(--purple)}
-.hero{padding:22px 0 8px}
-.hero-card{
-  position:relative;overflow:hidden;
-  padding:28px;border-radius:28px;
-  background:
-    radial-gradient(circle at 90% 15%,rgba(167,139,250,.33),transparent 27%),
-    radial-gradient(circle at 10% 110%,rgba(139,92,246,.2),transparent 32%),
-    linear-gradient(135deg,#16121f,#0f0f11 65%);
-  border:1px solid #33264a;
-}
-.hero-card:after{
-  content:"";position:absolute;width:180px;height:180px;border-radius:50%;
-  border:1px solid rgba(167,139,250,.18);right:-65px;top:-70px;
-}
-.eyebrow{
-  display:inline-flex;align-items:center;gap:8px;
-  color:#ddd0ff;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
-}
-.hero h1{
-  font-family:"Raleway",sans-serif;
-  font-size:clamp(34px,5vw,60px);line-height:.96;letter-spacing:-2.2px;
-  margin:14px 0 10px;max-width:720px;
-}
-.hero p,.hero-actions{display:none}
-.section{padding:18px 0}
-.section-title{
-  display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:14px;
-}
-.section-title h2{
-  font-family:"Raleway",sans-serif;font-size:21px;letter-spacing:-.8px;margin:0;
-}
-.section-title p{margin:0;color:var(--muted);font-size:12px}
-.quick{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:11px;
-}
-.quick-item{
-  background:var(--surface);border:1px solid var(--line);border-radius:18px;
-  padding:15px 12px;min-height:96px;transition:.18s ease;
-}
-.quick-item:hover{border-color:#463568;transform:translateY(-2px)}
-.quick-icon{
-  width:36px;height:36px;border-radius:12px;background:var(--purple-soft);
-  border:1px solid #3b2b55;display:grid;place-items:center;color:var(--purple-2);
-  font-family:"Raleway",sans-serif;font-weight:900;font-size:12px;
-}
-.quick-item strong{display:block;margin-top:10px;font-size:12px}
-.quick-item small{display:block;color:var(--muted);margin-top:3px;font-size:10px}
-.controls{
-  display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;
-}
-.search-wrap{position:relative;flex:1;min-width:240px}
-.search{
-  width:100%;height:48px;padding:0 16px 0 43px;border-radius:15px;
-  border:1px solid var(--line);background:var(--surface);color:white;outline:none;
-}
-.search:focus{border-color:#59417c;box-shadow:0 0 0 4px rgba(139,92,246,.1)}
-.search::placeholder{color:#6f6f77}
-.search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#777}
-.filters{display:none}
-.filters::-webkit-scrollbar{display:none}
-.filter{
-  border:1px solid var(--line);background:var(--surface);color:#aaa;
-  padding:10px 13px;border-radius:999px;white-space:nowrap;cursor:pointer;font-size:11px;font-weight:900;
-}
-.filter.active{background:var(--purple-soft);border-color:#5a417e;color:#d8c9ff}
-.product-list{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:16px;
-}
-.product{
-  display:block;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:22px;
-  overflow:hidden;
-  transition:.18s ease;
-}
-.product:hover{
-  background:var(--surface-2);
-  border-color:#4d3968;
-  transform:translateY(-3px);
-}
-.product-cover{
-  position:relative;
-  height:190px;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 82% 20%,rgba(167,139,250,.26),transparent 27%),
-    linear-gradient(145deg,#21192f,#111114 72%);
-}
-.product-cover img{
-  width:100%;height:100%;display:block;object-fit:cover;
-}
-.product-cover.no-image{
-  display:grid;
-  place-items:center;
-}
-.product-placeholder{
-  width:68px;height:68px;border-radius:20px;
-  display:grid;place-items:center;
-  background:rgba(139,92,246,.13);
-  border:1px solid #584275;
-  color:#d7c9ff;
-  font-family:"Raleway",sans-serif;
-  font-size:19px;font-weight:900;
-}
-.product-tag{
-  position:absolute;left:12px;top:12px;
-  padding:6px 9px;border-radius:999px;
-  background:rgba(8,8,9,.8);
-  border:1px solid rgba(255,255,255,.1);
-  color:#ddd5ea;font-size:9px;font-weight:900;
-  backdrop-filter:blur(8px);
-}
-.product-arrow{
-  position:absolute;right:12px;bottom:12px;
-  width:38px;height:38px;border-radius:12px;
-  display:grid;place-items:center;
-  background:var(--purple);color:#fff;font-size:18px;font-weight:900;
-  box-shadow:0 8px 18px rgba(139,92,246,.22);
-}
-.product-main{padding:16px}
-.product-main h3{
-  margin:0;font-family:"Raleway",sans-serif;
-  font-size:17px;line-height:1.25;letter-spacing:-.45px;
-}
-.product-main p{
-  margin:6px 0 12px;color:var(--muted);
-  font-size:11px;line-height:1.55;min-height:34px;
-}
-.product-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.badge{
-  display:inline-flex;padding:5px 8px;border-radius:999px;
-  background:#1a171f;border:1px solid #2f2738;color:#aaa;
-  font-size:9px;font-weight:900;
-}
-.empty{
-  grid-column:1/-1;padding:40px 15px;text-align:center;
-  color:#777;font-size:13px;
-}
-.help{
-  margin:7px 22px 0;padding:18px;border-radius:20px;
-  background:var(--surface);border:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-}
-.help strong{font-family:"Raleway",sans-serif;font-size:14px}.help p{margin:4px 0 0;color:var(--muted);font-size:11px}
-.help a{padding:10px 13px;border-radius:12px;background:#1b1526;border:1px solid #46315f;color:#cfbfff;font-size:11px;font-weight:900;white-space:nowrap}
-.footer{padding:32px 22px 10px;color:#5e5e66;text-align:center;font-size:10px}
-@media(max-width:720px){.product-list{grid-template-columns:1fr}.app{max-width:100%}}
-@media(max-width:520px){
-  .topbar-inner{padding:0 16px;height:66px}
-  .hero,.section{padding-left:16px;padding-right:16px}
-  .hero-card{padding:23px;border-radius:23px}
-  .hero h1{font-size:39px;letter-spacing:-1.7px}
-  .section-title h2{font-size:19px}
-  .product{padding:12px}.product-icon{width:48px;height:48px;flex-basis:48px}
-  .product-main h3{font-size:14px}
-  .product-main p{font-size:10.5px}
-  .help{margin-left:16px;margin-right:16px;display:block}
-  .help a{display:inline-flex;margin-top:10px}
-}
+html,body{min-height:100%;margin:0}
+body{min-height:100vh;background:radial-gradient(circle at 50% -5%,rgba(139,92,246,.22),transparent 34%),radial-gradient(circle at 15% 90%,rgba(139,92,246,.07),transparent 28%),var(--bg);color:var(--text);font-family:Nunito,system-ui,sans-serif;display:grid;place-items:center;padding:24px}
+.shell{width:min(440px,100%)}
+.brand{text-align:center;font:900 25px/1 Raleway,system-ui,sans-serif;letter-spacing:-1px;margin-bottom:26px}
+.brand span{color:var(--purple2)}
+.card{background:rgba(17,17,19,.96);border:1px solid var(--line);border-radius:26px;padding:30px;box-shadow:0 24px 80px rgba(0,0,0,.42)}
+.eyebrow{color:var(--purple2);font-size:10px;font-weight:900;letter-spacing:1.6px;margin-bottom:9px}
+h1{font:900 31px/1.05 Raleway,system-ui,sans-serif;letter-spacing:-1.2px;margin:0 0 9px}
+.intro{color:var(--muted);font-size:13px;line-height:1.65;margin:0 0 24px}
+label{display:block;font-size:11px;font-weight:900;letter-spacing:.7px;margin:15px 0 7px}
+input{width:100%;height:49px;border:1px solid var(--line);border-radius:13px;background:var(--surface2);color:#fff;padding:0 14px;outline:none;font:600 14px Nunito,system-ui,sans-serif}
+input::placeholder{color:#5f5f68}
+input:focus{border-color:#62438e;box-shadow:0 0 0 4px rgba(139,92,246,.1)}
+button{width:100%;height:51px;border:0;border-radius:14px;background:var(--purple);color:#fff;font:900 13px Nunito,system-ui,sans-serif;letter-spacing:.5px;margin-top:21px;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+.msg{display:none;margin-top:14px;padding:11px 13px;border-radius:12px;background:#1c1524;border:1px solid #493361;color:#d9c8ef;font-size:12px;line-height:1.55}
+.footer{text-align:center;color:#5f5f66;font-size:11px;margin-top:20px}.footer strong{color:#77777f}
+@media(max-width:480px){body{padding:18px}.card{padding:25px 21px;border-radius:22px}h1{font-size:28px}}
 </style>
 </head>
 <body>
-<div class="app" id="home">
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="logo">CUANIFY<span>.</span></div><a href="login.html" style="padding:9px 12px;border:1px solid #3b2b55;background:#17121f;border-radius:11px;color:#d8c9ff;font-size:11px;font-weight:900">MEMBER AREA →</a>
-      <div class="status"><span class="dot"></span> Product Hub</div>
-    </div>
-  </header>
-
-  <section class="hero">
-    <div class="hero-card">
-      <div class="eyebrow">CUANIFY PRODUCT HUB</div>
-      <h1>Semua produk. Satu tempat.</h1>
-      <p>Pilih produk yang kamu butuhkan, lalu langsung masuk. Tidak perlu muter-muter.</p>
-      <div class="hero-actions">
-        <a class="primary" href="#produk">Lihat Produk <span>→</span></a>
-        <a class="secondary" href="https://wa.me/628179909994" target="_blank" rel="noopener">Butuh Bantuan</a>
-      </div>
-    </div>
+<main class="shell">
+  <div class="brand">CUANIFY<span>.</span></div>
+  <section class="card" aria-label="Login CUANIFY">
+    <div class="eyebrow">MEMBER ACCESS</div>
+    <h1>Selamat datang.</h1>
+    <p class="intro">Masuk untuk melihat semua produk CUANIFY yang sudah menjadi milik kamu.</p>
+    <form id="form">
+      <label for="email">EMAIL</label>
+      <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="nama@email.com">
+      <label for="password">PASSWORD</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="Password">
+      <button id="submit" type="submit">MASUK KE MEMBER AREA</button>
+      <div id="msg" class="msg" role="alert"></div>
+    </form>
   </section>
-
-  <section class="section" id="produk">
-    <div class="section-title">
-      <h2>Produk CUANIFY</h2>
-      
-    </div>
-    <div class="controls">
-      <div class="search-wrap">
-        <span class="search-icon">⌕</span>
-        <input id="search" class="search" type="search" placeholder="Cari produk..." autocomplete="off">
-      </div>
-    </div>
-    <main id="grid" class="product-list" aria-live="polite"></main>
-  </section>
-
-  <section class="help">
-    <div>
-      <strong>Butuh bantuan akses?</strong>
-      <p>Hubungi admin kalau ada produk atau tombol yang bermasalah.</p>
-    </div>
-    <a href="https://wa.me/628179909994" target="_blank" rel="noopener">Chat Admin →</a>
-  </section>
-
-  <footer class="footer">© 2026 CUANIFY. Digital products for digital business.</footer>
-</div>
-
-
-
-<script>
-const products=[
-  {name:"VIP MEMBER",cat:"VIP Member",mark:"VIP",desc:"Semua akses CUANIFY untuk member.",url:"vip-member.html",image:""},
-  {name:"CUANIFY TOOLS",cat:"AI Tools",mark:"TOOLS",desc:"Tools AI lengkap untuk kebutuhan digital.",url:"cuanify-tools.html",image:""},
-  {name:"EDUPOSTERGPT",cat:"AI Tools",mark:"EP",desc:"Buat poster edukasi dengan bantuan AI.",url:"edupostergpt.html",image:""},
-  {name:"INSTANMEDIA AI",cat:"AI Tools",mark:"IM",desc:"Buat materi visual dan konten dengan AI.",url:"instanmedia.html",image:""},
-  {name:"PLATINUM MEMBER",cat:"VIP Member",mark:"PLAT",desc:"Akses modul dan bonus khusus Platinum Member.",url:"platinum-member.html",image:""},
-  {name:"CUANIMASI",cat:"AI Tools",mark:"ANIMASI",desc:"Materi dan tools untuk bikin video AI.",url:"cuanimasi.html",image:""},
-  {name:"CUANIMASI THEME SONG",cat:"AI Tools",mark:"SONG",desc:"Materi utama dan bonus CUANIMASI Theme Song.",url:"cuanimasi-theme-song.html",image:""},
-  {name:"JALUR LANGIT",cat:"VIP Member",mark:"LANGIT",desc:"Program belajar dan aset bisnis digital.",url:"jalur-langit.html",image:""},
-  {name:"BONGKAR RAHASIA JUALAN DI WA",cat:"Ebook",mark:"WA",desc:"Belajar jualan lewat WhatsApp.",url:"bongkar-rahasia-jualan-wa.html",image:""},
-  {name:"KELAS GAMBAR VIDEO AI",cat:"AI Tools",mark:"GVA",desc:"Kelas gambar dan video AI dari dasar sampai praktik.",url:"kelas-gambar-video-ai.html",image:""},
-  {name:"PROMPT VIRAL",cat:"Prompt",mark:"PV",desc:"Kumpulan prompt viral. Pilih, copy, langsung bikin.",url:"prompt-viral.html",image:""},
-  {name:"KARYAWAN AI",cat:"AI Tools",mark:"AI",desc:"Enam Karyawan AI untuk bantu pekerjaan digital.",url:"karyawan-ai.html",image:""},
-  {name:"500 KODE CURANG CHATGPT",cat:"AI Tools",mark:"500",desc:"Kumpulan kode curang untuk memaksimalkan ChatGPT.",url:"500-kode-curang.html",image:""}
-];
-
-let category="all";
-const grid=document.getElementById("grid");
-const search=document.getElementById("search");
-const count=document.getElementById("count");
-
-function render(){
-  const q=search.value.trim().toLowerCase();
-  const filtered=products.filter(p=>
-    (category==="all" || p.cat===category) &&
-    (!q || Object.values(p).join(" ").toLowerCase().includes(q))
-  );
-  if(!filtered.length){
-    grid.innerHTML='<div class="empty">Produk tidak ditemukan.</div>';
-    return;
-  }
-  grid.innerHTML=filtered.map(p=>`
-    <a class="product" href="${p.url}">
-      <div class="product-cover ${p.image ? "" : "no-image"}">
-        ${p.image
-          ? `<img src="${p.image}" alt="${p.name}" loading="lazy">`
-          : `<div class="product-placeholder">${p.mark}</div>`}
-        <span class="product-tag">${p.cat}</span>
-        <span class="product-arrow">→</span>
-      </div>
-      <div class="product-main">
-        <h3>${p.name}</h3>
-        <p>${p.desc}</p>
-      </div>
-    </a>
-  `).join("");
-}
-
-document.querySelectorAll(".filter").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
-    const target=document.querySelector('.filter[data-c="'+btn.dataset.c+'"]') || btn;
-    document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x===target));
-    category=btn.dataset.c;
-    render();
-    document.getElementById("produk").scrollIntoView({behavior:"smooth",block:"start"});
-  });
+  <div class="footer"><strong>CUANIFY.</strong> Member Area</div>
+</main>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const supabase=createClient("https://nwjmtnaqbiwhrmgimyqy.supabase.co","sb_publishable_6x3fyciQNza50vtKq1S53w_xsogvAJc");
+const form=document.getElementById("form"),email=document.getElementById("email"),password=document.getElementById("password"),btn=document.getElementById("submit"),msg=document.getElementById("msg");
+const show=t=>{msg.textContent=t;msg.style.display="block"};
+const {data:{session}}=await supabase.auth.getSession();
+if(session) location.replace("member-area.html");
+form.addEventListener("submit",async e=>{
+  e.preventDefault();msg.style.display="none";btn.disabled=true;btn.textContent="MEMPROSES...";
+  const {error}=await supabase.auth.signInWithPassword({email:email.value.trim(),password:password.value});
+  if(error){show("Email atau password salah. Jika kamu sudah memiliki akses produk tetapi belum memiliki akun login, hubungi admin.");btn.disabled=false;btn.textContent="MASUK KE MEMBER AREA";return}
+  location.replace("member-area.html");
 });
-
-document.querySelectorAll(".quick-item").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    category=btn.dataset.cat;
-    document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x.dataset.c===category));
-    render();
-    document.getElementById("produk").scrollIntoView({behavior:"smooth",block:"start"});
-  });
-});
-
-search.addEventListener("input",render);
-render();
 </script>
 </body>
 </html>
