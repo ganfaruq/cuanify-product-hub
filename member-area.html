@@ -119,7 +119,7 @@ function render(){
 
     if(hasAccess && !p.url){
       const readyInner=inner.replace("BUKA PRODUK →","KONTEN SEGERA HADIR");
-      return '<div class="'+cardClass+'" title="Konten produk sedang disiapkan">'+readyInner+'</div>';
+      return '<a class="'+cardClass+'" href="coming-soon.html?slug='+encodeURIComponent(p.slug)+'" title="Konten produk sedang disiapkan">'+readyInner+'</a>';
     }
 
     return '<div class="'+cardClass+'" title="Produk ini belum terhubung ke akun kamu">'+inner+'</div>';
