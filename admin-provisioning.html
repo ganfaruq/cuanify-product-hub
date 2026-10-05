@@ -10,7 +10,7 @@ main{max-width:900px;margin:40px auto;padding:24px}
 .card{background:#111114;border:1px solid #2b2b31;border-radius:18px;padding:24px;margin-bottom:20px}
 h1{margin:0 0 8px;font-size:32px}.muted{color:#9a9aa5}
 button{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;margin-right:8px}
-#one{background:#f4c400;color:#111}#ten{background:#fff;color:#111}
+#one{background:#f4c400;color:#111}#ten{background:#fff;color:#111}#hundred{background:#8ff0a4;color:#111}#thousand{background:#ff8d8d;color:#111}
 pre{white-space:pre-wrap;word-break:break-word;background:#050506;border-radius:12px;padding:16px;overflow:auto}
 .ok{color:#8ff0a4}.err{color:#ff8d8d}
 </style>
@@ -34,6 +34,8 @@ pre{white-space:pre-wrap;word-break:break-word;background:#050506;border-radius:
   <p>Provisioning hanya mengambil queue <b>HIGH confidence</b>, verified, email valid, dan belum punya Auth.</p>
   <button id="one">PROVISION 1</button>
   <button id="ten">PROVISION 10</button>
+  <button id="hundred">PROVISION 100</button>
+  <button id="thousand">PROVISION 1000</button>
   <button id="logout" style="background:#2b2b31;color:#fff">LOGOUT</button>
 </div>
 <div class="card">
@@ -107,25 +109,74 @@ passwordEl.addEventListener("keydown",(event)=>{
   if(event.key==="Enter") handleAdminLogin();
 });
 
+async function invokeBatch(batch){
+  const {data,error}=await supabaseClient.functions.invoke("provision-legacy-members",{body:{batch_size:batch}});
+  if(error) throw error;
+  return data;
+}
+
 async function run(batch){
   statusEl.textContent="Menjalankan batch "+batch+"...";
   resultEl.textContent="";
-  document.querySelectorAll("#one,#ten").forEach(b=>b.disabled=true);
+  document.querySelectorAll("#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=true);
   try{
-    const {data,error}=await supabaseClient.functions.invoke("provision-legacy-members",{body:{batch_size:batch}});
-    if(error) throw error;
+    const data=await invokeBatch(batch);
     statusEl.innerHTML='<span class="ok">SELESAI</span>';
     resultEl.textContent=JSON.stringify(data,null,2);
   }catch(e){
     statusEl.innerHTML='<span class="err">GAGAL</span>';
     resultEl.textContent=JSON.stringify(e,null,2);
   }finally{
-    document.querySelectorAll("#one,#ten").forEach(b=>b.disabled=false);
+    document.querySelectorAll("#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=false);
+  }
+}
+
+async function runLarge(total){
+  statusEl.textContent="Menjalankan provisioning "+total+" akun, per sub-batch maksimal 10...";
+  resultEl.textContent="";
+  document.querySelectorAll("#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=true);
+  const summary={requested:total,processed:0,created_accounts:0,mapped_members:0,failed:0,runs:0,errors:[]};
+  try{
+    const chunks=Math.ceil(total/10);
+    const concurrency=5;
+    for(let start=0;start<chunks;start+=concurrency){
+      const jobs=[];
+      for(let i=start;i<Math.min(start+concurrency,chunks);i++){
+        jobs.push(invokeBatch(Math.min(10,total-(i*10))));
+      }
+      const results=await Promise.allSettled(jobs);
+      for(const r of results){
+        summary.runs++;
+        if(r.status==="fulfilled"){
+          const d=r.value||{};
+          summary.processed+=Number(d.processed||0);
+          summary.created_accounts+=Number(d.created_accounts||0);
+          summary.mapped_members+=Number(d.mapped_members||0);
+          summary.failed+=Number(d.failed||0);
+          if(d.error) summary.errors.push(d.error);
+        }else{
+          summary.failed++;
+          summary.errors.push(r.reason?.message||String(r.reason));
+        }
+      }
+      statusEl.textContent="Progress: "+summary.processed+" / "+total+" diproses...";
+      resultEl.textContent=JSON.stringify(summary,null,2);
+    }
+    statusEl.innerHTML='<span class="ok">SELESAI</span>';
+    resultEl.textContent=JSON.stringify(summary,null,2);
+  }catch(e){
+    statusEl.innerHTML='<span class="err">GAGAL</span>';
+    resultEl.textContent=JSON.stringify(summary,null,2)+"\n\n"+(e.message||String(e));
+  }finally{
+    document.querySelectorAll("#one,#ten,#hundred,#thousand").forEach(b=>b.disabled=false);
   }
 }
 
 document.getElementById("one").addEventListener("click",()=>run(1));
 document.getElementById("ten").addEventListener("click",()=>run(10));
+document.getElementById("hundred").addEventListener("click",()=>runLarge(100));
+document.getElementById("thousand").addEventListener("click",()=>runLarge(1000));
+
 document.getElementById("logout").addEventListener("click",async()=>{
   await supabaseClient.auth.signOut();
   resultEl.textContent="";
