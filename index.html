@@ -128,36 +128,82 @@ button,input{font:inherit}
   padding:10px 13px;border-radius:999px;white-space:nowrap;cursor:pointer;font-size:11px;font-weight:900;
 }
 .filter.active{background:var(--purple-soft);border-color:#5a417e;color:#d8c9ff}
-.product-list{display:grid;gap:10px}
+.product-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
 .product{
-  display:flex;align-items:center;gap:14px;
-  padding:14px;background:var(--surface);
-  border:1px solid var(--line);border-radius:18px;
+  display:block;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:22px;
+  overflow:hidden;
   transition:.18s ease;
 }
-.product:hover{background:var(--surface-2);border-color:#45355b;transform:translateY(-1px)}
-.product-icon{
-  width:52px;height:52px;flex:0 0 52px;border-radius:15px;
+.product:hover{
+  background:var(--surface-2);
+  border-color:#4d3968;
+  transform:translateY(-3px);
+}
+.product-cover{
+  position:relative;
+  height:190px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 20%,rgba(167,139,250,.26),transparent 27%),
+    linear-gradient(145deg,#21192f,#111114 72%);
+}
+.product-cover img{
+  width:100%;height:100%;display:block;object-fit:cover;
+}
+.product-cover.no-image{
+  display:grid;
+  place-items:center;
+}
+.product-placeholder{
+  width:68px;height:68px;border-radius:20px;
   display:grid;place-items:center;
-  background:linear-gradient(145deg,#201a2c,#121216);
-  border:1px solid #3a2c4d;color:#d3c2ff;
-  font-family:"Raleway",sans-serif;font-size:13px;font-weight:900;
+  background:rgba(139,92,246,.13);
+  border:1px solid #584275;
+  color:#d7c9ff;
+  font-family:"Raleway",sans-serif;
+  font-size:19px;font-weight:900;
 }
-.product-main{min-width:0;flex:1}
+.product-tag{
+  position:absolute;left:12px;top:12px;
+  padding:6px 9px;border-radius:999px;
+  background:rgba(8,8,9,.8);
+  border:1px solid rgba(255,255,255,.1);
+  color:#ddd5ea;font-size:9px;font-weight:900;
+  backdrop-filter:blur(8px);
+}
+.product-arrow{
+  position:absolute;right:12px;bottom:12px;
+  width:38px;height:38px;border-radius:12px;
+  display:grid;place-items:center;
+  background:var(--purple);color:#fff;font-size:18px;font-weight:900;
+  box-shadow:0 8px 18px rgba(139,92,246,.22);
+}
+.product-main{padding:16px}
 .product-main h3{
-  margin:0;font-family:"Raleway",sans-serif;font-size:15px;line-height:1.25;letter-spacing:-.3px;
+  margin:0;font-family:"Raleway",sans-serif;
+  font-size:17px;line-height:1.25;letter-spacing:-.45px;
 }
-.product-main p{margin:4px 0 7px;color:var(--muted);font-size:11px;line-height:1.45}
+.product-main p{
+  margin:6px 0 12px;color:var(--muted);
+  font-size:11px;line-height:1.55;min-height:34px;
+}
 .product-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .badge{
-  display:inline-flex;padding:4px 7px;border-radius:999px;
-  background:#1a1a1e;color:#aaa;font-size:9px;font-weight:900;
+  display:inline-flex;padding:5px 8px;border-radius:999px;
+  background:#1a171f;border:1px solid #2f2738;color:#aaa;
+  font-size:9px;font-weight:900;
 }
-.access{
-  width:38px;height:38px;flex:0 0 38px;border-radius:12px;
-  background:var(--purple);display:grid;place-items:center;color:#fff;font-size:17px;font-weight:900;
+.empty{
+  grid-column:1/-1;padding:40px 15px;text-align:center;
+  color:#777;font-size:13px;
 }
-.empty{padding:30px 15px;text-align:center;color:#777;font-size:13px}
 .help{
   margin:7px 22px 0;padding:18px;border-radius:20px;
   background:var(--surface);border:1px solid var(--line);
@@ -186,7 +232,7 @@ button,input{font:inherit}
   .nav-item.active{background:var(--purple-soft);border-color:#51406a}
   .nav-item .nav-icon{display:inline;margin-right:5px}
 }
-@media(max-width:720px){.quick{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.quick{grid-template-columns:repeat(2,1fr)}.product-list{grid-template-columns:1fr}}
 @media(max-width:520px){
   .topbar-inner{padding:0 16px;height:66px}
   .hero,.section{padding-left:16px;padding-right:16px}
@@ -265,19 +311,19 @@ button,input{font:inherit}
 
 <script>
 const products=[
-  ["VIP MEMBER","VIP Member","VIP","Semua akses CUANIFY untuk member.","vip-member.html"],
-  ["CUANIFY TOOLS","AI Tools","TOOLS","Tools AI lengkap untuk kebutuhan digital.","cuanify-tools.html"],
-  ["EDUPOSTERGPT","AI Tools","EP","Buat poster edukasi dengan bantuan AI.","edupostergpt.html"],
-  ["INSTANMEDIA AI","AI Tools","IM","Buat materi visual dan konten dengan AI.","instanmedia.html"],
-  ["PLATINUM MEMBER","VIP Member","PLAT","Akses modul dan bonus khusus Platinum Member.","platinum-member.html"],
-  ["CUANIMASI","AI Tools","ANIMASI","Materi dan tools untuk bikin video AI.","cuanimasi.html"],
-  ["CUANIMASI THEME SONG","AI Tools","SONG","Materi utama dan bonus CUANIMASI Theme Song.","cuanimasi-theme-song.html"],
-  ["JALUR LANGIT","VIP Member","LANGIT","Program belajar dan aset bisnis digital.","jalur-langit.html"],
-  ["BONGKAR RAHASIA JUALAN DI WA","Ebook","WA","Belajar jualan lewat WhatsApp.","bongkar-rahasia-jualan-wa.html"],
-  ["KELAS GAMBAR VIDEO AI","AI Tools","GVA","Kelas gambar dan video AI dari dasar sampai praktik.","kelas-gambar-video-ai.html"],
-  ["PROMPT VIRAL","Prompt","PV","Kumpulan prompt viral. Pilih, copy, langsung bikin.","prompt-viral.html"],
-  ["KARYAWAN AI","AI Tools","AI","Enam Karyawan AI untuk bantu pekerjaan digital.","karyawan-ai.html"],
-  ["500 KODE CURANG CHATGPT","AI Tools","500","Kumpulan kode curang untuk memaksimalkan ChatGPT.","500-kode-curang.html"]
+  {name:"VIP MEMBER",cat:"VIP Member",mark:"VIP",desc:"Semua akses CUANIFY untuk member.",url:"vip-member.html",image:""},
+  {name:"CUANIFY TOOLS",cat:"AI Tools",mark:"TOOLS",desc:"Tools AI lengkap untuk kebutuhan digital.",url:"cuanify-tools.html",image:""},
+  {name:"EDUPOSTERGPT",cat:"AI Tools",mark:"EP",desc:"Buat poster edukasi dengan bantuan AI.",url:"edupostergpt.html",image:""},
+  {name:"INSTANMEDIA AI",cat:"AI Tools",mark:"IM",desc:"Buat materi visual dan konten dengan AI.",url:"instanmedia.html",image:""},
+  {name:"PLATINUM MEMBER",cat:"VIP Member",mark:"PLAT",desc:"Akses modul dan bonus khusus Platinum Member.",url:"platinum-member.html",image:""},
+  {name:"CUANIMASI",cat:"AI Tools",mark:"ANIMASI",desc:"Materi dan tools untuk bikin video AI.",url:"cuanimasi.html",image:""},
+  {name:"CUANIMASI THEME SONG",cat:"AI Tools",mark:"SONG",desc:"Materi utama dan bonus CUANIMASI Theme Song.",url:"cuanimasi-theme-song.html",image:""},
+  {name:"JALUR LANGIT",cat:"VIP Member",mark:"LANGIT",desc:"Program belajar dan aset bisnis digital.",url:"jalur-langit.html",image:""},
+  {name:"BONGKAR RAHASIA JUALAN DI WA",cat:"Ebook",mark:"WA",desc:"Belajar jualan lewat WhatsApp.",url:"bongkar-rahasia-jualan-wa.html",image:""},
+  {name:"KELAS GAMBAR VIDEO AI",cat:"AI Tools",mark:"GVA",desc:"Kelas gambar dan video AI dari dasar sampai praktik.",url:"kelas-gambar-video-ai.html",image:""},
+  {name:"PROMPT VIRAL",cat:"Prompt",mark:"PV",desc:"Kumpulan prompt viral. Pilih, copy, langsung bikin.",url:"prompt-viral.html",image:""},
+  {name:"KARYAWAN AI",cat:"AI Tools",mark:"AI",desc:"Enam Karyawan AI untuk bantu pekerjaan digital.",url:"karyawan-ai.html",image:""},
+  {name:"500 KODE CURANG CHATGPT",cat:"AI Tools",mark:"500",desc:"Kumpulan kode curang untuk memaksimalkan ChatGPT.",url:"500-kode-curang.html",image:""}
 ];
 
 let category="all";
@@ -288,8 +334,8 @@ const count=document.getElementById("count");
 function render(){
   const q=search.value.trim().toLowerCase();
   const filtered=products.filter(p=>
-    (category==="all" || p[1]===category) &&
-    (!q || p.join(" ").toLowerCase().includes(q))
+    (category==="all" || p.cat===category) &&
+    (!q || Object.values(p).join(" ").toLowerCase().includes(q))
   );
   count.textContent=filtered.length+" produk";
   if(!filtered.length){
@@ -297,14 +343,22 @@ function render(){
     return;
   }
   grid.innerHTML=filtered.map(p=>`
-    <a class="product" href="${p[4]}">
-      <div class="product-icon">${p[2]}</div>
-      <div class="product-main">
-        <h3>${p[0]}</h3>
-        <p>${p[3]}</p>
-        <div class="product-meta"><span class="badge">${p[1]}</span><span class="badge">Akses langsung</span></div>
+    <a class="product" href="${p.url}">
+      <div class="product-cover ${p.image ? "" : "no-image"}">
+        ${p.image
+          ? `<img src="${p.image}" alt="${p.name}" loading="lazy">`
+          : `<div class="product-placeholder">${p.mark}</div>`}
+        <span class="product-tag">${p.cat}</span>
+        <span class="product-arrow">→</span>
       </div>
-      <div class="access">→</div>
+      <div class="product-main">
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <div class="product-meta">
+          <span class="badge">${p.cat}</span>
+          <span class="badge">Akses langsung</span>
+        </div>
+      </div>
     </a>
   `).join("");
 }
