@@ -1,3 +1,349 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CUANIFY | Product Hub</title><style>*{box-sizing:border-box}body{margin:0;background:#0b0b0d;color:#f5f5f5;font-family:Inter,system-ui,sans-serif}.wrap{max-width:1180px;margin:auto;padding:0 24px}nav{height:78px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #242428}.logo{font-size:22px;font-weight:900}.logo b{color:#f4c400}.pill,.filter{border:1px solid #303036;background:#121216;color:#bbb;padding:9px 13px;border-radius:999px;font-size:13px}.hero{padding:70px 0 30px}.eyebrow{color:#f4c400;font-size:12px;font-weight:900;letter-spacing:.16em}.hero h1{font-size:clamp(42px,7vw,76px);line-height:.93;letter-spacing:-.06em;max-width:850px;margin:15px 0}.hero p{color:#aaa;max-width:680px;font-size:18px;line-height:1.6}.search{width:100%;max-width:700px;padding:16px 18px;border-radius:14px;border:1px solid #303036;background:#151519;color:#fff}.filters{display:flex;gap:9px;flex-wrap:wrap;margin:24px 0}.filter{cursor:pointer}.active{background:#f4c400;color:#111;border-color:#f4c400;font-weight:900}.head{display:flex;justify-content:space-between;margin:30px 0 15px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding-bottom:70px}.card{background:#121216;border:1px solid #29292f;border-radius:20px;overflow:hidden;transition:.2s}.card:hover{transform:translateY(-4px)}.cover{height:200px;background:linear-gradient(135deg,#25252c,#101014);display:grid;place-items:center;position:relative}.tag{position:absolute;top:14px;left:14px;background:#f4c400;color:#111;padding:6px 9px;border-radius:8px;font-size:10px;font-weight:900}.mark{font-size:44px;font-weight:950}.body{padding:19px}.body h3{margin:0 0 8px;font-size:20px}.body p{color:#92929a;font-size:13px;line-height:1.55;min-height:42px}.go{color:#f4c400;font-weight:900;font-size:12px}.meta{display:flex;justify-content:space-between}@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:580px){.wrap{padding:0 16px}.grid{grid-template-columns:1fr}}</style></head><body><div class="wrap"><nav><div class="logo">CUANIFY<b>.</b></div><span class="pill">Product Hub</span></nav><section class="hero"><div class="eyebrow">CUANIFY PRODUCT HUB</div><h1>Semua tools untuk bikin bisnis digital.</h1><p>Satu tempat untuk menemukan produk, tools, prompt, dan aset digital CUANIFY. Pilih produk, lalu langsung akses.</p><input id="search" class="search" placeholder="Cari produk, misalnya: prompt, ebook, AI..."><div class="filters"><button class="filter active" data-c="all">Semua</button><button class="filter" data-c="VIP Member">VIP Member</button><button class="filter" data-c="AI Tools">AI Tools</button><button class="filter" data-c="Prompt">Prompt</button><button class="filter" data-c="Ebook">Ebook</button><button class="filter" data-c="Template">Template</button></div></section><div class="head"><b>Produk CUANIFY</b><small id="count"></small></div><main id="grid" class="grid"></main><footer>© 2026 CUANIFY. Digital products for digital business.</footer></div><script>
-const ps=[["VIP MEMBER","VIP Member","VIP","Akses semua produk CUANIFY untuk paid member, termasuk update produk.","vip-member.html"],["CUANIFY TOOLS","AI Tools","TOOLS","Akses CUANIFY Tools lengkap dengan 12 video tutorial fitur.","cuanify-tools.html"],["EDUPOSTERGPT","AI Tools","EP","Akses EduPosterGPT langsung dari CUANIFY.","edupostergpt.html"],["INSTANMEDIA AI","AI Tools","IM","Akses INSTANMEDIA AI langsung dari CUANIFY.","instanmedia.html"],["PLATINUM MEMBER","VIP Member","PLAT","Dashboard akses 6 modul pembelajaran dan 6 bonus khusus Platinum Member.","platinum-member.html"],["CUANIMASI","AI Tools","ANIMASI","Akses materi, bonus, dan bonus spesial CUANIMASI dalam satu tempat.","cuanimasi.html"],["CUANIMASI THEME SONG","AI Tools","SONG","Akses materi utama dan bonus jasa video Lebaran dari CUANIMASI THEME SONG.","cuanimasi-theme-song.html"],["JALUR LANGIT","VIP Member","LANGIT","Akses program Jalur Langit 7, materi, reminder, kuliah WhatsApp Bisnis Digital, dan kursus CUANIMASI Viral Stickman.","jalur-langit.html"],["BONGKAR RAHASIA JUALAN DI WA","Ebook","WA","Mini LMS jualan WhatsApp: materi utama + 7 bonus, tanpa login.","bongkar-rahasia-jualan-wa.html"],["KELAS GAMBAR VIDEO AI","AI Tools","GVA","Kelas gambar dan video AI yang terbagi ke dalam modul dan bab pembelajaran.","kelas-gambar-video-ai.html"],["PROMPT VIRAL","Prompt","PV","Kumpulan prompt gambar viral. Pilih, salin, dan langsung gas bikin.","prompt-viral.html"],["KARYAWAN AI","AI Tools","AI","Akses Karyawan AI untuk membantu pekerjaan dan bisnis digital dengan bantuan AI.","karyawan-ai.html"],["500 KODE CURANG CHATGPT","AI Tools","500","Akses 500 Kode Curang ChatGPT untuk memaksimalkan penggunaan ChatGPT.","500-kode-curang.html"],];
-let cat="all";const g=document.querySelector("#grid"),s=document.querySelector("#search"),n=document.querySelector("#count");function render(){let q=s.value.toLowerCase(),a=ps.filter(p=>(cat==="all"||p[1]===cat)&&(!q||p.join(" ").toLowerCase().includes(q)));n.textContent=a.length+" produk";g.innerHTML=a.map(p=>'<article class="card"><div class="cover"><span class="tag">'+p[1]+'</span><div class="mark">'+p[2]+'</div></div><div class="body"><h3>'+p[0]+'</h3><p>'+p[3]+'</p><div class="meta"><small>'+p[1]+'</small><a class="go" href="'+p[4]+'">AKSES PRODUK →</a></div></div></article>').join("")}document.querySelectorAll(".filter").forEach(b=>b.onclick=()=>{document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));b.classList.add("active");cat=b.dataset.c;render()});s.oninput=render;render();</script></body></html>
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CUANIFY | Product Hub</title>
+<meta name="description" content="Satu tempat untuk akses produk, tools, prompt, kelas, dan membership CUANIFY.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Raleway:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070707;
+  --surface:#111113;
+  --surface-2:#17171a;
+  --surface-3:#1e1e22;
+  --text:#f7f7f8;
+  --muted:#9a9aa3;
+  --line:#28282d;
+  --purple:#8b5cf6;
+  --purple-2:#a78bfa;
+  --purple-soft:rgba(139,92,246,.14);
+  --white:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:"Nunito",system-ui,sans-serif;
+  padding-bottom:82px;
+}
+a{text-decoration:none;color:inherit}
+button,input{font:inherit}
+.app{max-width:1180px;margin:auto}
+.topbar{
+  position:sticky;top:0;z-index:20;
+  backdrop-filter:blur(18px);
+  background:rgba(7,7,7,.86);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.topbar-inner{
+  height:72px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px;
+}
+.logo{
+  font-family:"Raleway",sans-serif;font-size:22px;font-weight:900;letter-spacing:-.7px;
+}
+.logo span{color:var(--purple-2)}
+.status{
+  display:flex;align-items:center;gap:8px;color:#cfcfd4;font-size:12px;font-weight:800;
+  padding:9px 12px;border:1px solid var(--line);background:var(--surface);
+  border-radius:999px;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--purple);box-shadow:0 0 12px var(--purple)}
+.hero{
+  padding:26px 22px 12px;
+}
+.hero-card{
+  position:relative;overflow:hidden;
+  padding:28px;border-radius:28px;
+  background:
+    radial-gradient(circle at 90% 15%,rgba(167,139,250,.33),transparent 27%),
+    radial-gradient(circle at 10% 110%,rgba(139,92,246,.2),transparent 32%),
+    linear-gradient(135deg,#16121f,#0f0f11 65%);
+  border:1px solid #33264a;
+}
+.hero-card:after{
+  content:"";position:absolute;width:180px;height:180px;border-radius:50%;
+  border:1px solid rgba(167,139,250,.18);right:-65px;top:-70px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  color:#ddd0ff;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
+}
+.hero h1{
+  font-family:"Raleway",sans-serif;
+  font-size:clamp(34px,5vw,60px);line-height:.96;letter-spacing:-2.2px;
+  margin:14px 0 10px;max-width:720px;
+}
+.hero p{margin:0;color:#b4b1ba;line-height:1.65;max-width:660px;font-size:15px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.primary,.secondary{
+  border-radius:14px;padding:12px 15px;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:8px;
+}
+.primary{background:var(--purple);color:white;box-shadow:0 10px 25px rgba(139,92,246,.18)}
+.secondary{background:#141417;color:#ddd;border:1px solid #2e2e34}
+.section{padding:22px}
+.section-title{
+  display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:14px;
+}
+.section-title h2{
+  font-family:"Raleway",sans-serif;font-size:21px;letter-spacing:-.8px;margin:0;
+}
+.section-title p{margin:0;color:var(--muted);font-size:12px}
+.quick{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:11px;
+}
+.quick-item{
+  background:var(--surface);border:1px solid var(--line);border-radius:18px;
+  padding:15px 12px;min-height:96px;transition:.18s ease;
+}
+.quick-item:hover{border-color:#463568;transform:translateY(-2px)}
+.quick-icon{
+  width:36px;height:36px;border-radius:12px;background:var(--purple-soft);
+  border:1px solid #3b2b55;display:grid;place-items:center;color:var(--purple-2);
+  font-family:"Raleway",sans-serif;font-weight:900;font-size:12px;
+}
+.quick-item strong{display:block;margin-top:10px;font-size:12px}
+.quick-item small{display:block;color:var(--muted);margin-top:3px;font-size:10px}
+.controls{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;
+}
+.search-wrap{position:relative;flex:1;min-width:240px}
+.search{
+  width:100%;height:48px;padding:0 16px 0 43px;border-radius:15px;
+  border:1px solid var(--line);background:var(--surface);color:white;outline:none;
+}
+.search:focus{border-color:#59417c;box-shadow:0 0 0 4px rgba(139,92,246,.1)}
+.search::placeholder{color:#6f6f77}
+.search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#777}
+.filters{
+  display:flex;gap:8px;overflow:auto;padding-bottom:3px;
+  scrollbar-width:none;
+}
+.filters::-webkit-scrollbar{display:none}
+.filter{
+  border:1px solid var(--line);background:var(--surface);color:#aaa;
+  padding:10px 13px;border-radius:999px;white-space:nowrap;cursor:pointer;font-size:11px;font-weight:900;
+}
+.filter.active{background:var(--purple-soft);border-color:#5a417e;color:#d8c9ff}
+.product-list{display:grid;gap:10px}
+.product{
+  display:flex;align-items:center;gap:14px;
+  padding:14px;background:var(--surface);
+  border:1px solid var(--line);border-radius:18px;
+  transition:.18s ease;
+}
+.product:hover{background:var(--surface-2);border-color:#45355b;transform:translateY(-1px)}
+.product-icon{
+  width:52px;height:52px;flex:0 0 52px;border-radius:15px;
+  display:grid;place-items:center;
+  background:linear-gradient(145deg,#201a2c,#121216);
+  border:1px solid #3a2c4d;color:#d3c2ff;
+  font-family:"Raleway",sans-serif;font-size:13px;font-weight:900;
+}
+.product-main{min-width:0;flex:1}
+.product-main h3{
+  margin:0;font-family:"Raleway",sans-serif;font-size:15px;line-height:1.25;letter-spacing:-.3px;
+}
+.product-main p{margin:4px 0 7px;color:var(--muted);font-size:11px;line-height:1.45}
+.product-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.badge{
+  display:inline-flex;padding:4px 7px;border-radius:999px;
+  background:#1a1a1e;color:#aaa;font-size:9px;font-weight:900;
+}
+.access{
+  width:38px;height:38px;flex:0 0 38px;border-radius:12px;
+  background:var(--purple);display:grid;place-items:center;color:#fff;font-size:17px;font-weight:900;
+}
+.empty{padding:30px 15px;text-align:center;color:#777;font-size:13px}
+.help{
+  margin:7px 22px 0;padding:18px;border-radius:20px;
+  background:var(--surface);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+}
+.help strong{font-family:"Raleway",sans-serif;font-size:14px}.help p{margin:4px 0 0;color:var(--muted);font-size:11px}
+.help a{padding:10px 13px;border-radius:12px;background:#1b1526;border:1px solid #46315f;color:#cfbfff;font-size:11px;font-weight:900;white-space:nowrap}
+.footer{padding:32px 22px 10px;color:#5e5e66;text-align:center;font-size:10px}
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:rgba(10,10,12,.94);backdrop-filter:blur(18px);
+  border-top:1px solid #222228;
+}
+.bottom-inner{max-width:560px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.nav-item{
+  padding:11px 8px 10px;text-align:center;color:#777;cursor:pointer;font-size:9px;font-weight:900;
+}
+.nav-item .nav-icon{display:block;font-size:17px;line-height:1;margin-bottom:4px}
+.nav-item.active{color:#cdbaff}
+.nav-item.active .nav-icon{color:var(--purple-2)}
+@media(min-width:820px){
+  body{padding-bottom:22px}
+  .bottom-nav{position:static;background:transparent;border-top:0;backdrop-filter:none}
+  .bottom-inner{max-width:none;display:flex;justify-content:flex-end;gap:8px;padding:0 22px 8px}
+  .nav-item{padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+  .nav-item.active{background:var(--purple-soft);border-color:#51406a}
+  .nav-item .nav-icon{display:inline;margin-right:5px}
+}
+@media(max-width:720px){.quick{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){
+  .topbar-inner{padding:0 16px;height:66px}
+  .hero,.section{padding-left:16px;padding-right:16px}
+  .hero-card{padding:23px;border-radius:23px}
+  .hero h1{font-size:39px;letter-spacing:-1.7px}
+  .section-title h2{font-size:19px}
+  .product{padding:12px}.product-icon{width:48px;height:48px;flex-basis:48px}
+  .product-main h3{font-size:14px}
+  .product-main p{font-size:10.5px}
+  .help{margin-left:16px;margin-right:16px;display:block}
+  .help a{display:inline-flex;margin-top:10px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="home">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="logo">CUANIFY<span>.</span></div>
+      <div class="status"><span class="dot"></span> Product Hub</div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-card">
+      <div class="eyebrow">CUANIFY PRODUCT HUB</div>
+      <h1>Semua produk. Satu tempat.</h1>
+      <p>Pilih produk yang kamu butuhkan, lalu langsung masuk. Tidak perlu muter-muter.</p>
+      <div class="hero-actions">
+        <a class="primary" href="#produk">Lihat Produk <span>→</span></a>
+        <a class="secondary" href="https://wa.me/628179909994" target="_blank" rel="noopener">Butuh Bantuan</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="kategori">
+    <div class="section-title">
+      <h2>Akses cepat</h2>
+      <p>Pilih kategori</p>
+    </div>
+    <div class="quick">
+      <button class="quick-item" data-cat="VIP Member"><span class="quick-icon">VIP</span><strong>Membership</strong><small>Member area</small></button>
+      <button class="quick-item" data-cat="AI Tools"><span class="quick-icon">AI</span><strong>AI Tools</strong><small>Tools siap pakai</small></button>
+      <button class="quick-item" data-cat="Prompt"><span class="quick-icon">P</span><strong>Prompt</strong><small>Prompt praktis</small></button>
+      <button class="quick-item" data-cat="Ebook"><span class="quick-icon">E</span><strong>Ebook</strong><small>Materi digital</small></button>
+    </div>
+  </section>
+
+  <section class="section" id="produk">
+    <div class="section-title">
+      <h2>Produk CUANIFY</h2>
+      <p id="count"></p>
+    </div>
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="search" class="search" type="search" placeholder="Cari produk..." autocomplete="off">
+      </div>
+    </div>
+    <div class="filters" aria-label="Filter produk">
+      <button class="filter active" data-c="all">Semua</button>
+      <button class="filter" data-c="VIP Member">Membership</button>
+      <button class="filter" data-c="AI Tools">AI Tools</button>
+      <button class="filter" data-c="Prompt">Prompt</button>
+      <button class="filter" data-c="Ebook">Ebook</button>
+    </div>
+    <main id="grid" class="product-list" aria-live="polite"></main>
+  </section>
+
+  <section class="help">
+    <div>
+      <strong>Butuh bantuan akses?</strong>
+      <p>Hubungi admin kalau ada produk atau tombol yang bermasalah.</p>
+    </div>
+    <a href="https://wa.me/628179909994" target="_blank" rel="noopener">Chat Admin →</a>
+  </section>
+
+  <footer class="footer">© 2026 CUANIFY. Digital products for digital business.</footer>
+</div>
+
+<nav class="bottom-nav">
+  <div class="bottom-inner">
+    <a class="nav-item active" href="#home"><span class="nav-icon">⌂</span>Home</a>
+    <a class="nav-item" href="#produk"><span class="nav-icon">▦</span>Produk</a>
+    <a class="nav-item" href="#kategori"><span class="nav-icon">◈</span>Kategori</a>
+    <a class="nav-item" href="https://wa.me/628179909994" target="_blank" rel="noopener"><span class="nav-icon">?</span>Bantuan</a>
+  </div>
+</nav>
+
+<script>
+const products=[
+  ["VIP MEMBER","VIP Member","VIP","Semua akses CUANIFY untuk member.","vip-member.html"],
+  ["CUANIFY TOOLS","AI Tools","TOOLS","Tools AI lengkap untuk kebutuhan digital.","cuanify-tools.html"],
+  ["EDUPOSTERGPT","AI Tools","EP","Buat poster edukasi dengan bantuan AI.","edupostergpt.html"],
+  ["INSTANMEDIA AI","AI Tools","IM","Buat materi visual dan konten dengan AI.","instanmedia.html"],
+  ["PLATINUM MEMBER","VIP Member","PLAT","Akses modul dan bonus khusus Platinum Member.","platinum-member.html"],
+  ["CUANIMASI","AI Tools","ANIMASI","Materi dan tools untuk bikin video AI.","cuanimasi.html"],
+  ["CUANIMASI THEME SONG","AI Tools","SONG","Materi utama dan bonus CUANIMASI Theme Song.","cuanimasi-theme-song.html"],
+  ["JALUR LANGIT","VIP Member","LANGIT","Program belajar dan aset bisnis digital.","jalur-langit.html"],
+  ["BONGKAR RAHASIA JUALAN DI WA","Ebook","WA","Belajar jualan lewat WhatsApp.","bongkar-rahasia-jualan-wa.html"],
+  ["KELAS GAMBAR VIDEO AI","AI Tools","GVA","Kelas gambar dan video AI dari dasar sampai praktik.","kelas-gambar-video-ai.html"],
+  ["PROMPT VIRAL","Prompt","PV","Kumpulan prompt viral. Pilih, copy, langsung bikin.","prompt-viral.html"],
+  ["KARYAWAN AI","AI Tools","AI","Enam Karyawan AI untuk bantu pekerjaan digital.","karyawan-ai.html"],
+  ["500 KODE CURANG CHATGPT","AI Tools","500","Kumpulan kode curang untuk memaksimalkan ChatGPT.","500-kode-curang.html"]
+];
+
+let category="all";
+const grid=document.getElementById("grid");
+const search=document.getElementById("search");
+const count=document.getElementById("count");
+
+function render(){
+  const q=search.value.trim().toLowerCase();
+  const filtered=products.filter(p=>
+    (category==="all" || p[1]===category) &&
+    (!q || p.join(" ").toLowerCase().includes(q))
+  );
+  count.textContent=filtered.length+" produk";
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty">Produk tidak ditemukan.</div>';
+    return;
+  }
+  grid.innerHTML=filtered.map(p=>`
+    <a class="product" href="${p[4]}">
+      <div class="product-icon">${p[2]}</div>
+      <div class="product-main">
+        <h3>${p[0]}</h3>
+        <p>${p[3]}</p>
+        <div class="product-meta"><span class="badge">${p[1]}</span><span class="badge">Akses langsung</span></div>
+      </div>
+      <div class="access">→</div>
+    </a>
+  `).join("");
+}
+
+document.querySelectorAll(".filter").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+    const target=document.querySelector('.filter[data-c="'+btn.dataset.c+'"]') || btn;
+    document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x===target));
+    category=btn.dataset.c;
+    render();
+    document.getElementById("produk").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+});
+
+document.querySelectorAll(".quick-item").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    category=btn.dataset.cat;
+    document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x.dataset.c===category));
+    render();
+    document.getElementById("produk").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+});
+
+search.addEventListener("input",render);
+render();
+</script>
+</body>
+</html>
