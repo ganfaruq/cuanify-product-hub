@@ -155,6 +155,28 @@ async function boot(){
   const name=email.split("@")[0]||"Member";
   document.getElementById("greeting").textContent="Halo, "+name+".";
 
+  const {data:catalogData,error:catalogError}=await supabase
+    .from("products")
+    .select("name,slug,description,access_url,image_url,active")
+    .order("active",{ascending:false})
+    .order("name",{ascending:true});
+
+  if(catalogError){
+    grid.innerHTML='<div class="empty">Katalog produk gagal dimuat.</div>';
+    count.textContent="0 akses";
+    return;
+  }
+
+  products=(catalogData||[]).map(p=>({
+    name:p.name,
+    cat:productCategory(p.name,p.active),
+    mark:productMark(p.name),
+    desc:p.description||"Konten produk sedang disiapkan.",
+    slug:p.slug,
+    url:p.access_url||null,
+    active:!!p.active
+  }));
+
   const {data,error}=await supabase.rpc("get_my_product_access");
 
   if(!error && Array.isArray(data)){
