@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login Member | CUANIFY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Raleway:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070707;--surface:#111113;--line:#29292f;--text:#f7f7f8;--muted:#9999a2;--purple:#8b5cf6;--purple2:#a78bfa}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#21152f 0,transparent 38%),var(--bg);color:var(--text);font-family:Nunito,system-ui,sans-serif;display:grid;place-items:center;padding:22px}.box{width:min(430px,100%)}.brand{font:900 24px Raleway;text-align:center;margin-bottom:24px}.brand span{color:var(--purple2)}.card{background:rgba(17,17,19,.94);border:1px solid var(--line);border-radius:26px;padding:28px;box-shadow:0 20px 70px rgba(0,0,0,.35)}h1{font:900 30px Raleway;margin:0 0 7px;letter-spacing:-1px}p{color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 22px}label{display:block;font-size:12px;font-weight:900;margin:14px 0 7px}input{width:100%;height:48px;border:1px solid var(--line);border-radius:13px;background:#0b0b0d;color:white;padding:0 14px;outline:none}input:focus{border-color:#62438e;box-shadow:0 0 0 4px rgba(139,92,246,.1)}button{width:100%;height:50px;border:0;border-radius:14px;background:var(--purple);color:#fff;font-weight:900;margin-top:20px;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.msg{display:none;margin-top:14px;padding:11px 13px;border-radius:12px;background:#1c1524;border:1px solid #493361;color:#d9c8ef;font-size:12px;line-height:1.5}.back{display:block;text-align:center;color:#999;font-size:12px;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="brand">CUANIFY<span>.</span></div>
+  <div class="card">
+    <h1>Masuk ke Member Area</h1>
+    <p>Gunakan email dan password akun CUANIFY kamu untuk melihat produk yang sudah kamu miliki.</p>
+    <form id="form">
+      <label for="email">EMAIL</label>
+      <input id="email" type="email" autocomplete="email" required placeholder="nama@email.com">
+      <label for="password">PASSWORD</label>
+      <input id="password" type="password" autocomplete="current-password" required placeholder="Password">
+      <button id="submit" type="submit">MASUK</button>
+      <div id="msg" class="msg"></div>
+    </form>
+  </div>
+  <a class="back" href="index.html">← Kembali ke Product Hub</a>
+</div>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const supabase=createClient("https://nwjmtnaqbiwhrmgimyqy.supabase.co","sb_publishable_6x3fyciQNza50vtKq1S53w_xsogvAJc");
+const form=document.getElementById("form"),btn=document.getElementById("submit"),msg=document.getElementById("msg");
+const show=t=>{msg.textContent=t;msg.style.display="block"};
+const {data:{session}}=await supabase.auth.getSession();
+if(session) location.href="member-area.html";
+form.addEventListener("submit",async e=>{
+ e.preventDefault();btn.disabled=true;btn.textContent="MEMPROSES...";
+ const {error}=await supabase.auth.signInWithPassword({email:email.value.trim(),password:password.value});
+ if(error){show("Email atau password salah. Kalau kamu sudah pernah membeli produk tetapi belum punya akun login, hubungi admin.");btn.disabled=false;btn.textContent="MASUK";return}
+ location.href="member-area.html";
+});
+</script>
+</body>
+</html>
