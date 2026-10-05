@@ -171,13 +171,13 @@ async function renderAffiliate(){
       '<div class="account-card"><span class="eyebrow">DIBAYAR</span><h3 style="font-size:20px">'+rupiah(affiliateData.paid_commission)+'</h3><p>Total terbayar</p></div>'+
     '</div>'+
     '<div class="account-card" style="margin-top:10px">'+
-      '<div class="eyebrow">LOCK BUYER</div>'+
-      '<h3 style="font-size:22px">'+Number(affiliateData.locked_buyers||0)+' pembeli</h3>'+
-      '<p>Pembeli yang teratribusi ke kamu bisa dikunci. Buyer yang sudah terkunci affiliate lain tidak bisa direbut.</p>'+
+      '<div class="eyebrow">DATABASE PEMBELI</div>'+
+      '<h3 style="font-size:22px">'+Number(affiliateData.locked_buyers||0)+' pembeli terkunci</h3>'+
+      '<p>Data pembeli lama tetap dipertahankan. Pembeli yang sudah terkunci oleh kamu tetap menjadi milik kamu, sementara buyer yang terkunci affiliate lain tidak bisa direbut.</p>'+
     '</div>'+
     '<div class="account-card" style="margin-top:10px">'+
-      '<div class="eyebrow">DATA PEMBELI</div>'+
-      '<div id="affiliateBuyerList" class="buyer-list"><div class="empty">Memuat data pembeli...</div></div>'+
+      '<div class="eyebrow">SEMUA PEMBELI SAYA</div>'+
+      '<div id="affiliateBuyerList" class="buyer-list"><div class="empty">Memuat database pembeli...</div></div>'+
     '</div>';
 
   document.getElementById("copyAffiliateCode")?.addEventListener("click",async()=>{
@@ -198,7 +198,7 @@ async function renderAffiliate(){
     return;
   }
   if(!affiliateBuyers.length){
-    list.innerHTML='<div class="empty">Belum ada data pembeli.</div>';
+    list.innerHTML='<div class="empty">Belum ada data pembeli affiliate.</div>';
     return;
   }
   list.innerHTML=affiliateBuyers.map(b=>{
@@ -226,7 +226,7 @@ async function renderAffiliate(){
       if(error){
         btn.disabled=false;
         btn.textContent="KUNCI";
-        alert(error.message||"Buyer gagal dikunci.");
+        alert(error.message||"Pembeli gagal dikunci.");
         return;
       }
       await loadAffiliate();
