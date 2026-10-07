@@ -248,17 +248,9 @@ const products=[
   {name:"500 KODE CURANG CHATGPT",cat:"AI Tools",mark:"500",desc:"Kumpulan kode curang untuk memaksimalkan ChatGPT.",url:"500-kode-curang.html",image:""}
 ];
 
-let category="all";
-const grid=document.getElementById("grid");
-const search=document.getElementById("search");
-const count=document.getElementById("count");
-
 function render(){
-  const q=search.value.trim().toLowerCase();
-  const filtered=products.filter(p=>
-    (category==="all" || p.cat===category) &&
-    (!q || Object.values(p).join(" ").toLowerCase().includes(q))
-  );
+
+  const filtered=products;
   if(!filtered.length){
     grid.innerHTML='<div class="empty">Produk tidak ditemukan.</div>';
     return;
@@ -280,27 +272,6 @@ function render(){
   `).join("");
 }
 
-document.querySelectorAll(".filter").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
-    const target=document.querySelector('.filter[data-c="'+btn.dataset.c+'"]') || btn;
-    document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x===target));
-    category=btn.dataset.c;
-    render();
-    document.getElementById("produk").scrollIntoView({behavior:"smooth",block:"start"});
-  });
-});
-
-document.querySelectorAll(".quick-item").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    category=btn.dataset.cat;
-    document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x.dataset.c===category));
-    render();
-    document.getElementById("produk").scrollIntoView({behavior:"smooth",block:"start"});
-  });
-});
-
-search.addEventListener("input",render);
 render();
 </script>
 </body>
